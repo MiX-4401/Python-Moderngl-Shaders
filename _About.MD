@@ -1,0 +1,2 @@
+Starting on the 13/11/23, I have writing a single shader program with OpenGL for Manulelly's silly cat-in-a-sink game  
+The name of file represents the date of when I started making the shader, the window caption represents the date of release
