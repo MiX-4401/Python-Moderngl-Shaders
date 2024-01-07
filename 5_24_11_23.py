@@ -103,8 +103,8 @@ void main() {
 }
 """
 
-    def __init__(self, caption:str, swizzle:str, scale:int, flip:bool=True, path:str="None", url:str="None"):
-        super().__init__(path=path, url=url, scale=scale, caption=caption, flip=flip, swizzle=swizzle)
+    def __init__(self, caption:str, swizzle:str, scale:int, flip:bool=True, components:int=3, path:str="None", url:str="None"):
+        super().__init__(path=path, url=url, scale=scale, caption=caption, flip=flip, swizzle=swizzle, components=components)
         
         self.load_program()
 
@@ -121,7 +121,7 @@ void main() {
         self.ambient_buffer: mgl.Buffer = self.ctx.buffer(self.ambient_data.tobytes())
         
         # Load normal texture
-        normal_image_data = self.get_image_from_file(path=r"04Projects\ShaderShenanigans\images\0NormalWall.png", scale=1.5, flip=True)
+        normal_image_data = self.get_image_from_file(path=r"images\0NormalWall.png", scale=1.5, flip=True)
         self.normal_texture: mgl.Texture  = self.get_texture_from_data(image_data=normal_image_data)
         self.normal_texture.filter: tuple = (mgl.NEAREST, mgl.NEAREST)
 
@@ -176,7 +176,7 @@ void main() {
 
 if __name__ == "__main__":
     shader_program: ShaderProgram = ShaderProgram(
-        path=r"04Projects\ShaderShenanigans\images\0TextureWall.png",
+        path=r"images\0TextureWall.png",
         caption="NA",
         swizzle="RGBA",
         scale=1.5,

@@ -39,14 +39,15 @@ void main(){
 }
 """
 
-    def __init__(self, caption:str, swizzle:str, scale:int, flip:bool=True, path:str="None", url:str="None"):
-        self.caption: str  = caption
-        self.url:     str  = url
-        self.path:    str  = path
-        self.scale:   int  = scale
-        self.swizzle: str  = swizzle
-        self.time:    int  = 0
-        self.flip:    bool = flip
+    def __init__(self, caption:str, swizzle:str, scale:int, components:int=3, flip:bool=True, path:str="None", url:str="None"):
+        self.caption:    str  = caption
+        self.url:        str  = url
+        self.path:       str  = path
+        self.scale:      int  = scale
+        self.swizzle:    str  = swizzle
+        self.components: int  = components
+        self.time:       int  = 0
+        self.flip:       bool = flip
 
     def load_program(self):
 
@@ -68,7 +69,7 @@ void main(){
         self.main_vao: moderngl.VertexArray = self.ctx.vertex_array(self.main_program, [(self.quad_buffer, "2f 2f", "aPosition", "aTexCoord")])
         self.ctx.enable(moderngl.BLEND)
         
-        self.my_texture:   moderngl.Texture = self.get_texture_from_data(image_data=self.image_data)
+        self.my_texture: moderngl.Texture = self.get_texture_from_data(image_data=self.image_data)
         self.my_texture.swizzle: str = self.swizzle
         
     def get_image_from_url(self, url:str, scale:int, flip:bool):
@@ -87,7 +88,7 @@ void main(){
         return image_data
 
     def get_texture_from_data(self, image_data:Image.Image):
-        my_texture: moderngl.Texture = self.ctx.texture(size=image_data.size, components=4, data=image_data.tobytes())
+        my_texture: moderngl.Texture = self.ctx.texture(size=image_data.size, components=self.components, data=image_data.tobytes())
         my_texture.filter: tuple = (moderngl.NEAREST, moderngl.NEAREST)
         return my_texture
     
