@@ -39,13 +39,14 @@ void main(){
 }
 """
 
-    def __init__(self, caption:str, swizzle:str, scale:int, components:int=3, flip:bool=True, path:str="None", url:str="None"):
+    def __init__(self, caption:str, swizzle:str, scale:int, components:int=3, flip:bool=True, path:str="None", url:str="None", method:str="nearest"):
         self.caption:    str  = caption
         self.url:        str  = url
         self.path:       str  = path
         self.scale:      int  = scale
         self.swizzle:    str  = swizzle
         self.components: int  = components
+        self.method:     int  = method
         self.time:       int  = 0
         self.flip:       bool = flip
 
@@ -88,8 +89,14 @@ void main(){
         return image_data
 
     def get_texture_from_data(self, image_data:Image.Image):
+        
         my_texture: moderngl.Texture = self.ctx.texture(size=image_data.size, components=self.components, data=image_data.tobytes())
-        my_texture.filter: tuple = (moderngl.NEAREST, moderngl.NEAREST)
+        if self.method == "nearest":
+            my_texture.filter: tuple = (moderngl.NEAREST, moderngl.NEAREST)
+        elif self.method == "linear":
+            my_texture.filter: tuple = (moderngl.LINEAR, moderngl.LINEAR)
+        else:
+            raise f"Invalid scaling method {self.method} and not ['nearest', 'linear]"
         return my_texture
     
     @classmethod

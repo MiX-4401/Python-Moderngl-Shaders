@@ -23,8 +23,8 @@ class ShaderProgram(Main):
     }
 """
 
-    def __init__(self, caption:str, swizzle:str, scale:int, flip:bool=True, components:int=3, path:str="None", url:str="None"):
-        super().__init__(path=path, url=url, scale=scale, caption=caption, flip=flip, swizzle=swizzle, components=components)
+    def __init__(self, caption:str, swizzle:str, scale:int, flip:bool=True, components:int=3, method:str="nearest", path:str="None", url:str="None"):
+        super().__init__(path=path, url=url, scale=scale, caption=caption, flip=flip, swizzle=swizzle, components=components, method=method)
 
         self.load_program()
         

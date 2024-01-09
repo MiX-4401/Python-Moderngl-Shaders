@@ -64,9 +64,8 @@ void main(){
 }
 """
 
-    def __init__(self, caption:str, swizzle:str, scale:int, flip:bool=True, components:int=3, path:str="None", url:str="None"):
-        super().__init__(path=path, url=url, scale=scale, caption=caption, flip=flip, swizzle=swizzle, components=components)
-
+    def __init__(self, caption:str, swizzle:str, scale:int, flip:bool=True, components:int=3, method:str="nearest", path:str="None", url:str="None"):
+        super().__init__(path=path, url=url, scale=scale, caption=caption, flip=flip, swizzle=swizzle, components=components, method=method)
         # Load parent variables
         self.load_program()
 
@@ -106,5 +105,6 @@ ShaderProgram(
     url=r"https://pre00.deviantart.net/949a/th/pre/i/2013/044/0/d/the_kookaburra_by_kqeina-d5us1tb.png",
     caption="20/11/23",
     swizzle="RBGA",
+    components=4,
     scale=1
 ).run()
