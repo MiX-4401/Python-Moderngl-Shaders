@@ -99,16 +99,6 @@ void main(){
             raise f"Invalid scaling method {self.method} and not ['nearest', 'linear]"
         return my_texture
     
-    @classmethod
-    def d_update(cls, func):
-        def inner(self, *args, **kwargs):
-
-            self.time += 1
-
-            result = func(self, *args, **kwargs)
-            return result
-        
-        return inner
 
     def garbage_cleanup(self):
         self.ctx.release()
@@ -145,6 +135,8 @@ void main(){
 
             self.time += 1
 
+            pygame.display.set_caption(f"{self.caption} | FPS: {round(self.clock.get_fps())} | TIME: {self.time}")
+
             result = func(self, *args, **kwargs)
             return result
         
@@ -152,6 +144,7 @@ void main(){
 
     def update(self):
         self.time += 1
+        pygame.display.set_caption(f"{self.caption} | FPS: {round(self.clock.get_fps())} | TIME: {self.time}")
 
     @classmethod
     def d_draw(cls, func):
