@@ -5,7 +5,6 @@ Date: 17th November 2023
 
 from _lib import Main
 import moderngl as mgl
-import pygame
 
 class ShaderProgram(Main):
 

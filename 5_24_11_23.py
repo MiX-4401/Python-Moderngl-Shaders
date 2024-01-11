@@ -180,5 +180,6 @@ if __name__ == "__main__":
         caption="NA",
         swizzle="RGBA",
         scale=1.5,
-        flip=True
+        flip=True,
+        components=4
     ).run()

@@ -39,7 +39,7 @@ void main(){
 }
 """
 
-    def __init__(self, caption:str, swizzle:str, scale:int, components:int=3, flip:bool=True, path:str="None", url:str="None", method:str="nearest"):
+    def __init__(self, caption:str, swizzle:str, scale:int, flip:bool=True, components:int=3, method:str="nearest", path:str="None", url:str="None"):
         self.caption:    str  = caption
         self.url:        str  = url
         self.path:       str  = path
@@ -56,6 +56,7 @@ void main(){
             self.image_data: Image.Image = self.get_image_from_url(scale=self.scale, url=self.url, flip=self.flip) 
         elif self.path != "None":
             self.image_data = self.get_image_from_file(scale=self.scale, path=self.path, flip=self.flip)
+
 
         # Pygame Boilerplate
         self.clock:  pygame.time.Clock = pygame.time.Clock()

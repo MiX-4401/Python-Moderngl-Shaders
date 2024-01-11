@@ -31,19 +31,20 @@ void main(){
     vec4 colour3 = vec4(50.0/225.0, 82.0/225.0,  209.0/225.0, 1.0);
     vec4 colour4 = vec4(29.0/225.0, 48.0/225.0,  122.0/225.0, 1.0);
 
+    // Pixelate effect
     vec2 uv_pixel = floor(uvs * (uResolution/4)) / (uResolution/4);
+    //uv_pixel = uvs;
 
     vec3 displace = texture(myTexture, vec2(uv_pixel.x, (uv_pixel.y + time) * 0.05)).rgb;
-    displace *= 0.5;
-	displace.r -= 1.0;
-	displace.b -= 1.0;
-	displace.b *= 0.5;
+    //displace = texture(myTexture, vec2(uv_pixel.x, (uv_pixel.y))).rgb;
 
 
     vec2 uv_temp = uv_pixel;
     uv_temp.y *= 0.2;
 	uv_temp.y += time;
     vec4 colour = texture(myTexture, uv_temp + displace.xy);
+
+    
     
     vec4 noise  = floor(colour * 10.0) / 5.0;
     vec4 bright = mix(colour1, colour2, uvs.y);
@@ -97,7 +98,11 @@ if __name__ == "__main__":
         swizzle="RGBA",
         scale=0.5,
         flip=True,
-        components=4,
+        components=3,
         method="linear",
         url="https://ragingnexus.com/assets/86c5a3-e4598871c3b71818c250cbb80c6ce1c08fbf501dc381137e0ebedd4951f0e946d0ef90d16201c054be9f3dce44b7234b3dc7572973665b2b3945e2dce784ded7.png",
+        # url="https://images.wallpapersden.com/image/download/hollow-knight-art_bGZlZ26UmZqaraWkpJRqZmdlrWdtbWU.jpg",
     ).run()
+
+
+
