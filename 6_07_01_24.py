@@ -72,6 +72,7 @@ void main(){
         self.new_program: mgl.Program     = self.ctx.program(vertex_shader=Main.main_vertex, fragment_shader=ShaderProgram.program_frag)
         self.new_vao:     mgl.VertexArray = self.ctx.vertex_array(self.new_program, [(self.quad_buffer, "2f 2f", "aPosition", "aTexCoord")])
 
+        self.start_mouse_pos: tuple = pygame.mouse.get_pos()
 
     @Main.d_update
     def update(self):
