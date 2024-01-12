@@ -60,13 +60,21 @@ void main(){
 uniform sampler2D myTexture;
 uniform vec2 uResolution;
 uniform vec2 uMousePos;
-uniform float uWarpStrength;
 
 in vec2 uvs;
 out vec4 fColour;
 
-float sdfCircle(vec2 pos, float radius, float softness){
-    return (length(pos) - radius / softness);
+vec2 fishEyeDistortion(vec2 uv, vec2 cursor, float radius, float strength) {
+    vec2 delta = uv - cursor;
+    float distance = length(delta);
+
+    // Apply fish-eye distortion within the specified radius
+    if (distance < radius) {
+        float distortion = 1.0 - smoothstep(0.0, 1.0, distance / radius);
+        delta *= distortion * strength;
+    }
+
+    return uv + delta;
 }
 
 void main(){
@@ -74,11 +82,13 @@ void main(){
     vec2 mousePos = uMousePos/uResolution;
     vec2 absUv = gl_FragCoord.xy/uResolution;
 
-    float distance = sdfCircle(absUv - mousePos, 0.1, 0.05);
+    float fishEyeRadius = 0.2;
+    float fishEyeStrength = 0.1;
 
-    vec2 warp = absUv + normalize(absUv - mousePos) * uWarpStrength * smoothstep(0.0, 0.05, abs(distance));
-    
-    vec4 colour = texture(myTexture, warp).rgba; 
+    // Apply fish-eye distortion around the cursor
+    vec2 distortedUV = fishEyeDistortion(absUv, mousePos, fishEyeRadius, fishEyeStrength);
+
+    vec4 colour = texture(myTexture, distortedUV).rgba; 
 
     fColour = vec4(colour.rgb, colour.a);
     //fColour = vec4(uvs.x, uvs.y, 1.0, 1.0);
@@ -86,8 +96,8 @@ void main(){
 
 """
 
-    def __init__(self, caption:str, swizzle:str, scale:int, flip:bool=True, components:int=3, method:str="nearest", path:str="None", url:str="None"):
-        super().__init__(path=path, url=url, scale=scale, caption=caption, flip=flip, swizzle=swizzle, components=components, method=method)
+    def __init__(self, caption:str, swizzle:str, scale:int, flip:bool=True, components:int=3, method:str="nearest", path:str="None", url:str="None", headless:bool=False):
+        super().__init__(path=path, url=url, scale=scale, caption=caption, flip=flip, swizzle=swizzle, components=components, method=method, headless=headless)
 
         self.load_program()
 
@@ -111,7 +121,7 @@ void main(){
         self.rain_program["uResolution"] = self.screen.get_size()
         self.warp_program["uResolution"] = self.screen.get_size()
         self.warp_program["uMousePos"]   = pygame.mouse.get_pos()
-        self.warp_program["uWarpStrength"] = 0.1
+        # self.warp_program["uWarpStrength"] = 0.1
 
 
     def garbage_cleanup(self):

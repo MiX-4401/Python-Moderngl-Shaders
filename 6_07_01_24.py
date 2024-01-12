@@ -59,8 +59,8 @@ void main(){
 }
 """
 
-    def __init__(self, caption:str, swizzle:str, scale:int, flip:bool=True, components:int=3, method:str="nearest", path:str="None", url:str="None"):
-        super().__init__(path=path, url=url, scale=scale, caption=caption, flip=flip, swizzle=swizzle, components=components, method=method)
+    def __init__(self, caption:str, swizzle:str, scale:int, flip:bool=True, components:int=3, method:str="nearest", path:str="None", url:str="None", headless:bool=False):
+        super().__init__(path=path, url=url, scale=scale, caption=caption, flip=flip, swizzle=swizzle, components=components, method=method, headless=headless)
 
         self.load_program()
 
@@ -96,12 +96,12 @@ if __name__ == "__main__":
     shader_program: ShaderProgram = ShaderProgram(
         caption="Rain Effect",
         swizzle="RGBA",
-        scale=0.5,
+        scale=1.0,
         flip=True,
-        components=3,
+        components=4,
+        headless=True,
         method="linear",
-        url="https://ragingnexus.com/assets/86c5a3-e4598871c3b71818c250cbb80c6ce1c08fbf501dc381137e0ebedd4951f0e946d0ef90d16201c054be9f3dce44b7234b3dc7572973665b2b3945e2dce784ded7.png",
-        # url="https://images.wallpapersden.com/image/download/hollow-knight-art_bGZlZ26UmZqaraWkpJRqZmdlrWdtbWU.jpg",
+        path=r"C:\Users\ejrad\OneDrive\Pictures\Ethan-PC Pictures\Custome screensavers\Rain Effect\image.png",
     ).run()
 
 
