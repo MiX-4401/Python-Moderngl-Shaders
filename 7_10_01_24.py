@@ -2,6 +2,7 @@
 Author: Ethan.R
 Date of Creation: 7th January 2025
 Date of Release: NA
+Name of Creation: SDF
 """
 
 
@@ -41,9 +42,9 @@ void main(){
     vec2 mousePos = uMousePos/uResolution;
 
     // Create a Signed Distance Field Shape
-    //float distanceToShape = sdfCircle(uvs - mousePos, 0.1);
+    float distanceToShape = sdfCircle(uvs - mousePos, 0.1);
     //float distanceToShape = sdfBox(uvs - mousePos, vec2(0.2, 0.1));
-      float distanceToShape = sdfSegment(uvs - mousePos, vec2(0.1, 0.1), vec2(0.5, 0.1));
+    //float distanceToShape = sdfSegment(uvs - mousePos, vec2(0.1, 0.1), vec2(0.5, 0.1));
 
 
     vec3 colour = vec3(distanceToShape / 0.05);

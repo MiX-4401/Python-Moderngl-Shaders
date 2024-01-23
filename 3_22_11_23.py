@@ -49,7 +49,7 @@ void main(){
         self.load_program()
 
         # Load normal texture
-        normal_image_data = self.get_image_from_file(scale=24, flip=True, path=r"04Projects\ShaderShenanigans\images\2NormalPlayer.png")
+        normal_image_data = self.get_image_from_file(scale=24, flip=True, path=r"images\2NormalPlayer.png")
         self.normal_texture: mgl.Texture  = self.get_texture_from_data(image_data=normal_image_data)
         self.normal_texture.filter: tuple = (mgl.NEAREST, mgl.NEAREST)
 
@@ -113,8 +113,9 @@ void main(){
         self.main_program["myTexture"] = 0
 
 ShaderProgram(
-    path=r"04Projects\ShaderShenanigans\images\2TexturePlayer.png",
+    path=r"images\2TexturePlayer.png",
     caption="22/11/23",
     swizzle="RGBA",
+    components=4,
     scale=24
 ).run()

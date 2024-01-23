@@ -71,5 +71,6 @@ ShaderProgram(
     url=r"https://www.pngplay.com/wp-content/uploads/9/Echidna-PNG-Clipart-Background-420x267.png",
     caption="28/11/23",
     swizzle="RGBA",
+    components=4,
     scale=2
 ).run()

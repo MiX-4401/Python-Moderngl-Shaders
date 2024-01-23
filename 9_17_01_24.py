@@ -1,8 +1,8 @@
 """
 Author: Ethan.R
-Date of Creation: 24th January 2024
+Date of Creation: 17th January 2024
 Date of Release: NA
-Name of Program: NA
+Name of Program: Shimmer Effect
 """
 
 
@@ -15,15 +15,26 @@ class ShaderProgram(Main):
 # version 460 core
 
 uniform sampler2D myTexture;
-
+uniform float uTime;
 
 in vec2 uvs;
 out vec4 fColour;
 
 void main(){
-    vec4 colour = texture(myTexture, uvs).rgba;
+    float time = uTime * 0.04;
+    vec4 colour = vec4(1.0);
 
-    fColour = vec4(colour.rgb, colour.a);
+    if (uvs.y > 0.3){
+        colour = texture(myTexture, vec2(uvs.x, -uvs.y));
+    } else {
+        float xoffset = 0.005 * cos(time * 3.0 + 200.0 * uvs.y);
+        float yoffset = ((0.3 - uvs.y) / 0.3) * 0.05 * (1.0 + cos(time * 3.0 + 5.0 * uvs.y));
+
+        colour = texture(myTexture, vec2(uvs.x + xoffset, -1.0 * (0.6 - uvs.y + yoffset)));
+    }
+    
+    fColour = vec4(colour.rgb, 1.0);
+    
 }
 """
 
@@ -43,7 +54,7 @@ void main(){
 
     @Main.d_update
     def update(self):
-        pass
+        self.new_program["uTime"] = self.time
 
     def garbage_cleanup(self):
         super().garbage_cleanup() # A better way then using decorators in this context
@@ -56,6 +67,7 @@ void main(){
     @Main.d_draw
     def draw(self):
         self.framebuffer.use()
+        self.framebuffer.clear()
         self.my_texture.use(location=0)
         self.new_program["myTexture"] = 0
         self.new_vao.render(mgl.TRIANGLE_STRIP)
@@ -69,10 +81,10 @@ void main(){
 
 if __name__ == "__main__":
     shader_program: ShaderProgram = ShaderProgram(
-        caption="NA",
+        caption="Shimmer Effect",
         swizzle="RGBA",
-        scale=1,
+        scale=0.5,
         flip=False,
-        components=4,
-        url="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Beautiful-landscape.png/800px-Beautiful-landscape.png"
+        components=3,
+        url=r"https://chrismartinphotography.files.wordpress.com/2012/05/vermilion-river-c2a9-2012-christopher-martin-9748.jpg"
     ).run()

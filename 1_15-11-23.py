@@ -54,5 +54,6 @@ ShaderProgram(
     url=r"https://images.fineartamerica.com/images/artworkimages/medium/1/a-kittens-helping-hand-on-a-transparent-background-terri-waters-transparent.png",
     caption="15/11/23",
     swizzle="RGBA",
+    components=4,
     scale=1
 ).run()
