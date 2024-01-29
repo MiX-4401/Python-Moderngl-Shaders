@@ -1,8 +1,8 @@
 """
 Author: Ethan.R
-Date of Creation: 24th January 2024
+Date of Creation: 29th January 2024
 Date of Release: NA
-Name of Program: NA
+Name of Program: Hiding Bilby
 """
 
 
@@ -37,9 +37,9 @@ void main(){
     float distance = sdfCircle(uv - mousePos, 0.1, 10.0);
 
     if (distance < 1.0){
-        colour.r += sin(uTime * 0.004)  * coverColour.r;
-        colour.g += sin(uTime * 0.008)  * coverColour.g;
-        colour.b += sin(uTime * 0.0012) * coverColour.b;
+        colour.r += uvs.y * (sin(uTime * 0.004)  * coverColour.r);
+        colour.g += uvs.x * (sin(uTime * 0.008)  * coverColour.g);
+        colour.b += uvs.x * (sin(uTime * 0.0012) * coverColour.b);
     }
     
     fColour = vec4(colour.rgb, 1.0);
@@ -97,7 +97,7 @@ void main(){
 
 if __name__ == "__main__":
     shader_program: ShaderProgram = ShaderProgram(
-        caption="NA",
+        caption="Hiding Bilby",
         swizzle="RGBA",
         scale=1,
         flip=False,
