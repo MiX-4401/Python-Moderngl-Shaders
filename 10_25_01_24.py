@@ -2,7 +2,7 @@
 Author: Ethan.R
 Date of Creation: 25th January 2024
 Date of Release: NA
-Name of Creation: Glimmer Efffects
+Name of Creation: Glimmer Efffects (Sucks)
 """
 
 
@@ -131,7 +131,7 @@ void main(){
 
 if __name__ == "__main__":
     shader_program: ShaderProgram = ShaderProgram(
-        caption="Glimmer Efffects",
+        caption="Glimmer Efffects (Sucks)",
         swizzle="RGBA",
         scale=1.0,
         flip=True,
