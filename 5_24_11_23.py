@@ -126,7 +126,7 @@ void main() {
         self.normal_texture.filter: tuple = (mgl.NEAREST, mgl.NEAREST)
 
         # Load render target texture
-        self.new_texture: mgl.Texture     = self.ctx.texture(size=self.my_texture.size, components=4)
+        self.new_texture: mgl.Texture     = self.ctx.texture(size=self.start_texture.size, components=4)
         self.new_texture.filter: tuple    = (mgl.NEAREST, mgl.NEAREST)
         self.framebuffer: mgl.Framebuffer = self.ctx.framebuffer(color_attachments=[self.new_texture])
 
@@ -159,7 +159,7 @@ void main() {
 
         self.light_buffer.bind_to_uniform_block(binding=0)
         self.ambient_buffer.bind_to_uniform_block(binding=1)
-        self.my_texture.use(location=2)
+        self.start_texture.use(location=2)
         self.normal_texture.use(location=3)
 
         self.new_program["LightsBlock"].binding = 0
@@ -176,7 +176,7 @@ void main() {
 
 if __name__ == "__main__":
     shader_program: ShaderProgram = ShaderProgram(
-        path=r"images\0TextureWall.png",
+        path=r"_images\0TextureWall.png",
         caption="NA",
         swizzle="RGBA",
         scale=1.5,

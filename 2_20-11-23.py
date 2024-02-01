@@ -71,7 +71,7 @@ void main(){
         # Create shader program
         self.new_program: mgl.Program     = self.ctx.program(vertex_shader=Main.main_vertex, fragment_shader=ShaderProgram.program_frag)
         self.new_vao:     mgl.VertexArray = self.ctx.vertex_array(self.new_program, [(self.quad_buffer, "2f 2f", "aPosition", "aTexCoord")])
-        self.new_texture: mgl.Texture     = self.ctx.texture(size=self.my_texture.size, components=4)
+        self.new_texture: mgl.Texture     = self.ctx.texture(size=self.start_texture.size, components=4)
         self.framebuffer: mgl.Framebuffer = self.ctx.framebuffer(color_attachments=[self.new_texture])
 
         self.new_program["resolution"] = self.screen.get_size()
@@ -86,7 +86,7 @@ void main(){
         self.framebuffer.clear(red=0.0, green=0.0, blue=0.0)
 
         self.framebuffer.use()
-        self.my_texture.use(location=0)
+        self.start_texture.use(location=0)
         self.new_program["myTexture"] = 0
         self.new_vao.render(mgl.TRIANGLE_STRIP)
 

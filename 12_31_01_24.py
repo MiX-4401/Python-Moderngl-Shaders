@@ -10,7 +10,7 @@ from _lib import Main
 import moderngl as mgl
 import pygame
 
-from _shaderPasses.colourInvert import colourInvert as bigA
+from _shaderPasses.colourInvert import ColourInvert
 
 class ShaderProgram(Main):
     program_frag: str = """
@@ -35,7 +35,7 @@ void main(){
         self.load_program()
 
         # Load render target texture
-        self.new_texture: mgl.Texture     = self.ctx.texture(size=self.my_texture.size, components=4)
+        self.new_texture: mgl.Texture     = self.ctx.texture(size=self.start_texture.size, components=4)
         self.new_texture.filter: tuple    = (mgl.NEAREST, mgl.NEAREST)
         self.framebuffer: mgl.Framebuffer = self.ctx.framebuffer(color_attachments=[self.new_texture])
 
@@ -58,11 +58,9 @@ void main(){
     @Main.d_draw
     def draw(self):
         self.framebuffer.use()
-        self.my_texture.use(location=0)
+        self.start_texture.use(location=0)
         self.new_program["myTexture"] = 0
         self.new_vao.render(mgl.TRIANGLE_STRIP)
-
-        self.framebuffer = bigA(ctx=self.ctx, target=self.framebuffer, bTexCoord=0).func()
 
         self.ctx.screen.clear(red=0.0, green=0.0, blue=0.0, alpha=1.0)
         self.ctx.screen.use()

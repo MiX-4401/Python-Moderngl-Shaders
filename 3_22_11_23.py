@@ -49,12 +49,12 @@ void main(){
         self.load_program()
 
         # Load normal texture
-        normal_image_data = self.get_image_from_file(scale=24, flip=True, path=r"images\2NormalPlayer.png")
+        normal_image_data = self.get_image_from_file(scale=24, flip=True, path=r"_images\2NormalPlayer.png")
         self.normal_texture: mgl.Texture  = self.get_texture_from_data(image_data=normal_image_data)
         self.normal_texture.filter: tuple = (mgl.NEAREST, mgl.NEAREST)
 
         # Load render target texture
-        self.new_texture: mgl.Texture     = self.ctx.texture(size=self.my_texture.size, components=4)
+        self.new_texture: mgl.Texture     = self.ctx.texture(size=self.start_texture.size, components=4)
         self.new_texture.filter: tuple    = (mgl.NEAREST, mgl.NEAREST)
         self.framebuffer: mgl.Framebuffer = self.ctx.framebuffer(color_attachments=[self.new_texture])
 
@@ -98,7 +98,7 @@ void main(){
         self.framebuffer.clear(red=0.0, green=0.0, blue=0.0)
         
         # Use textures
-        self.my_texture.use(location=0)
+        self.start_texture.use(location=0)
         self.normal_texture.use(location=1)
 
         # Set shader uniforms
@@ -113,7 +113,7 @@ void main(){
         self.main_program["myTexture"] = 0
 
 ShaderProgram(
-    path=r"images\2TexturePlayer.png",
+    path=r"_images\2TexturePlayer.png",
     caption="22/11/23",
     swizzle="RGBA",
     components=4,

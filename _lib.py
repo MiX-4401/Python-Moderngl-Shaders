@@ -74,8 +74,8 @@ void main(){
         self.main_vao: moderngl.VertexArray = self.ctx.vertex_array(self.main_program, [(self.quad_buffer, "2f 2f", "aPosition", "aTexCoord")])
         self.ctx.enable(moderngl.BLEND)
         
-        self.my_texture: moderngl.Texture = self.get_texture_from_data(image_data=self.image_data)
-        self.my_texture.swizzle: str = self.swizzle
+        self.start_texture: moderngl.Texture = self.get_texture_from_data(image_data=self.image_data)
+        self.start_texture.swizzle: str = self.swizzle
         
     def get_image_from_url(self, url:str, scale:int, flip:bool):
         response: requests.Response = requests.get(url)
@@ -94,14 +94,14 @@ void main(){
 
     def get_texture_from_data(self, image_data:Image.Image):
         
-        my_texture: moderngl.Texture = self.ctx.texture(size=image_data.size, components=self.components, data=image_data.tobytes())
+        start_texture: moderngl.Texture = self.ctx.texture(size=image_data.size, components=self.components, data=image_data.tobytes())
         if self.method == "nearest":
-            my_texture.filter: tuple = (moderngl.NEAREST, moderngl.NEAREST)
+            start_texture.filter: tuple = (moderngl.NEAREST, moderngl.NEAREST)
         elif self.method == "linear":
-            my_texture.filter: tuple = (moderngl.LINEAR, moderngl.LINEAR)
+            start_texture.filter: tuple = (moderngl.LINEAR, moderngl.LINEAR)
         else:
             raise f"Invalid scaling method {self.method} and not ['nearest', 'linear]"
-        return my_texture
+        return start_texture
     
 
     def garbage_cleanup(self):
@@ -109,7 +109,7 @@ void main(){
         self.main_program.release()
         self.quad_buffer.release()
         self.main_vao.release()
-        self.my_texture.release()
+        self.start_texture.release()
 
     @classmethod
     def d_garbage_cleanup(cls, func):
@@ -119,7 +119,7 @@ void main(){
             self.main_program.release()
             self.quad_buffer.release()
             self.main_vao.release()
-            self.my_texture.release()
+            self.start_texture.release()
 
             result = func(self, *args, **kwargs)
             return result

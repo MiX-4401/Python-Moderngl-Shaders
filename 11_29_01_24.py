@@ -52,11 +52,11 @@ void main(){
         self.load_program()
 
         # Load render target texture
-        self.final_texture: mgl.Texture     = self.ctx.texture(size=self.my_texture.size, components=4)
+        self.final_texture: mgl.Texture     = self.ctx.texture(size=self.start_texture.size, components=4)
         self.final_texture.filter: tuple    = (mgl.NEAREST, mgl.NEAREST)
         self.framebuffer: mgl.Framebuffer = self.ctx.framebuffer(color_attachments=[self.final_texture])
 
-        self.cover_texture: mgl.Texture  = self.get_texture_from_data(image_data=self.get_image_from_file(path=r"images\3TextureBilby.png", scale=0.25, flip=True))
+        self.cover_texture: mgl.Texture  = self.get_texture_from_data(image_data=self.get_image_from_file(path=r"_images\3TextureBilby.png", scale=0.25, flip=True))
         self.cover_texture.filter: tuple = (mgl.NEAREST, mgl.NEAREST)
 
         # Create shader program
@@ -82,7 +82,7 @@ void main(){
     def draw(self):
         self.framebuffer.use()
 
-        self.my_texture.use(location=0)
+        self.start_texture.use(location=0)
         self.cover_texture.use(location=1)
         self.new_program["uTexture"]      = 0
         self.new_program["uCoverTexture"] = 1
@@ -102,5 +102,5 @@ if __name__ == "__main__":
         scale=1,
         flip=False,
         components=4,
-        path=r"images\0TextureWall.png"
+        path=r"_images\0TextureWall.png"
     ).run()

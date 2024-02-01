@@ -83,12 +83,12 @@ void main(){
         self.load_program()
 
         # Load render target texture
-        self.new_texture: mgl.Texture     = self.ctx.texture(size=self.my_texture.size, components=3)
+        self.new_texture: mgl.Texture     = self.ctx.texture(size=self.start_texture.size, components=3)
         self.new_texture.filter: tuple    = (mgl.NEAREST, mgl.NEAREST)
         self.framebuffer: mgl.Framebuffer = self.ctx.framebuffer(color_attachments=[self.new_texture])
 
         # Load render targer for noise
-        self.noise_texture: mgl.Texture = self.get_texture_from_data(image_data=self.get_image_from_file(path=r"images\noise.png", scale=0.25, flip=True))
+        self.noise_texture: mgl.Texture = self.get_texture_from_data(image_data=self.get_image_from_file(path=r"_images\noise.png", scale=0.25, flip=True))
         self.noise_texture.filter: tuple = (mgl.LINEAR, mgl.LINEAR)
         self.noise_framebuffer: mgl.Framebuffer = self.ctx.framebuffer(color_attachments=[self.noise_texture])
 
@@ -116,7 +116,7 @@ void main(){
         self.framebuffer.use()
         self.framebuffer.clear(red=0.0, green=0.0, blue=0.0, alpha=1.0)
 
-        self.my_texture.use(location=0)
+        self.start_texture.use(location=0)
         self.noise_framebuffer.color_attachments[0].use(location=1)
         self.new_program["uTexture"] = 0
         self.new_program["uNoiseTexture"] = 1
@@ -136,5 +136,5 @@ if __name__ == "__main__":
         scale=1.0,
         flip=True,
         components=4,
-        path=r"images\0TextureWall.png"
+        path=r"_images\0TextureWall.png"
     ).run()

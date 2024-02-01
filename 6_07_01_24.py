@@ -100,11 +100,11 @@ void main(){
         
         
         # Load Rain Textures
-        self.rain_texture:     mgl.Texture     = self.ctx.texture(size=self.my_texture.size, components=4)
+        self.rain_texture:     mgl.Texture     = self.ctx.texture(size=self.start_texture.size, components=4)
         self.rain_framebuffer: mgl.Framebuffer = self.ctx.framebuffer(color_attachments=[self.rain_texture])
 
         # Load SDF Textures
-        self.sdf_texture:     mgl.Texture     = self.ctx.texture(size=self.my_texture.size, components=4)
+        self.sdf_texture:     mgl.Texture     = self.ctx.texture(size=self.start_texture.size, components=4)
         self.sdf_texture.filter: tuple = (mgl.NEAREST, mgl.NEAREST)
         self.sdf_framebuffer: mgl.Framebuffer = self.ctx.framebuffer(color_attachments=[self.sdf_texture])
 
@@ -147,7 +147,7 @@ void main(){
 
         # Render rain shader
         self.rain_framebuffer.use()
-        self.my_texture.use(location=0)
+        self.start_texture.use(location=0)
         self.sdf_framebuffer.color_attachments[0].use(location=1)
         self.rain_program["uNoiseTexture"] = 0
         self.rain_program["uSDFTexture"]   = 1
@@ -171,7 +171,7 @@ if __name__ == "__main__":
         flip=True,
         components=4,
         method="linear",
-        path=r"images\noise.png",
+        path=r"_images\noise.png",
     ).run()
 
 

@@ -44,7 +44,7 @@ void main(){
         self.load_program()
 
          # Load render target texture
-        self.new_texture: mgl.Texture     = self.ctx.texture(size=self.my_texture.size, components=4)
+        self.new_texture: mgl.Texture     = self.ctx.texture(size=self.start_texture.size, components=4)
         self.new_texture.filter: tuple    = (mgl.NEAREST, mgl.NEAREST)
         self.framebuffer: mgl.Framebuffer = self.ctx.framebuffer(color_attachments=[self.new_texture])
 
@@ -68,7 +68,7 @@ void main(){
     def draw(self):
         self.framebuffer.use()
         self.framebuffer.clear()
-        self.my_texture.use(location=0)
+        self.start_texture.use(location=0)
         self.new_program["myTexture"] = 0
         self.new_vao.render(mgl.TRIANGLE_STRIP)
 
