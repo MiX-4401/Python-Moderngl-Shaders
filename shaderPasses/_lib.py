@@ -3,9 +3,8 @@ import moderngl as mgl
 import numpy
 
 class ShaderPass:
-    def __init__(self, ctx: mgl.Context, uniforms:dict):
+    def __init__(self, ctx: mgl.Context):
         self.ctx: mgl.Context = ctx
-        self.uniforms: dict   = uniforms
 
         self.shaders: dict = {
             "vert": {},
@@ -98,25 +97,21 @@ class ShaderPass:
         if type(data) != None: texture.write(data=data)
         self.textures.update({name: texture})
 
-    def render(self, program:str, vao:str, framebuffer:str):
+    def sample_texture(self, texture:str, location:int=0):
         """
-            Renders and returns textures from framebuffers 
+            Sets the sample location for a texture
         """
 
-        # Ready framebuffer
-        self.framebuffers[framebuffer].use()
-        # self.framebuffers[framebuffer].clear()
+        self.textures[texture].use(location=location)
         
-        # Set uniforms
-        for uniform in self.uniforms:
-            self.programs[program][uniform] = self.uniforms[uniform]
+    def sample_framebuffer(self, framebuffer:str, attachment:int=0, location:int=0):
+        """
+            Sets the sample location for a framebuffer
+        """
 
-        # Render
-        self.vaos[vao].render(mgl.TRIANGLE_STRIP)
+        self.framebuffers[framebuffer][attachment].use(location=location)
 
-        return self.framebuffers[framebuffer].color_attachments[0]
-
-    def render_direct(self, program:str, vao:str, framebuffer:mgl.Framebuffer):
+    def render_direct(self, program:str, vao:str, framebuffer:mgl.Framebuffer, **uniforms):
         """
             Renders the shader directly to the framebuffer
         """
@@ -126,8 +121,8 @@ class ShaderPass:
         # self.framebuffers[framebuffer].clear()
 
         # Set uniforms
-        for uniform in self.uniforms:
-            self.programs[program][uniform] = self.uniforms[uniform]
+        for uniform in uniforms:
+            self.programs[program][uniform] = uniforms[uniform]
         
         # Render
         self.vaos[vao].render(mgl.TRIANGLE_STRIP)

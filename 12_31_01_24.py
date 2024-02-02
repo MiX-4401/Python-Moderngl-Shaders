@@ -10,7 +10,7 @@ from _lib import Main
 import moderngl as mgl
 import pygame
 
-from _shaderPasses.colourInvert import ColourInvert
+from shaderPasses.gaussianBlur import GaussianBlur
 
 class ShaderProgram(Main):
     program_frag: str = """
@@ -40,34 +40,44 @@ void main(){
         self.framebuffer: mgl.Framebuffer = self.ctx.framebuffer(color_attachments=[self.new_texture])
 
         # Create shader program
-        self.new_program: mgl.Program     = self.ctx.program(vertex_shader=Main.main_vertex, fragment_shader=ShaderProgram.program_frag)
-        self.new_vao:     mgl.VertexArray = self.ctx.vertex_array(self.new_program, [(self.quad_buffer, "2f 2f", "aPosition", "aTexCoord")])
+        self.my_program: mgl.Program     = self.ctx.program(vertex_shader=Main.main_vertex, fragment_shader=ShaderProgram.program_frag)
+        self.my_vao:     mgl.VertexArray = self.ctx.vertex_array(self.my_program, [(self.quad_buffer, "2f 2f", "aPosition", "aTexCoord")])
+
+    
+    def garbage_cleanup(self):
+        super().garbage_cleanup() # A better way then using decorators in this context
+        self.my_program.release()
+        self.my_vao.release()
+        self.framebuffer.release()
+        self.new_texture.release()
 
     @Main.d_update
     def update(self):
         pass
 
-    def garbage_cleanup(self):
-        super().garbage_cleanup() # A better way then using decorators in this context
-        self.new_program.release()
-        self.new_program.release()
-        self.framebuffer.release()
-        self.new_vao.release()
-        self.new_texture.release()
-
     @Main.d_draw
     def draw(self):
+        
+        # Ready render target
         self.framebuffer.use()
+        
+        # Set uniforms
         self.start_texture.use(location=0)
-        self.new_program["myTexture"] = 0
-        self.new_vao.render(mgl.TRIANGLE_STRIP)
+        self.my_program["myTexture"] = 0
+        
+        # Render start_texture with my_program to final_texture
+        self.my_vao.render(mgl.TRIANGLE_STRIP)
 
+        # Shader pass
+        self.framebuffer = ColourInvert(ctx=self.ctx).run(framebuffer=self.framebuffer)
+
+        # Clear screen
         self.ctx.screen.clear(red=0.0, green=0.0, blue=0.0, alpha=1.0)
         self.ctx.screen.use()
 
+        # Render final_texture to screen
         self.framebuffer.color_attachments[0].use(location=0)
         self.main_program["myTexture"] = 0
-
 
 if __name__ == "__main__":
     shader_program: ShaderProgram = ShaderProgram(
@@ -76,5 +86,5 @@ if __name__ == "__main__":
         scale=1,
         flip=False,
         components=4,
-        path=r"_images\noise.png"
+        path=r"_images\0NormalWall.png"
     ).run()

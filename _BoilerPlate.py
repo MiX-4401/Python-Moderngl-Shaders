@@ -45,6 +45,27 @@ void main(){d_update
     def update(self):
         pass
 
+    @Main.d_draw
+    def draw(self):
+
+        # Ready render target
+        self.framebuffer.use()
+        
+        # Set uniforms
+        self.start_texture.use(location=0)
+        self.my_program["myTexture"] = 0
+        
+        # Render start_texture with my_program to final_texture
+        self.my_vao.render(mgl.TRIANGLE_STRIP)
+
+        # Clear screen
+        self.ctx.screen.clear(red=0.0, green=0.0, blue=0.0, alpha=1.0)
+        self.ctx.screen.use()
+
+        # Render final_texture to screen
+        self.framebuffer.color_attachments[0].use(location=0)
+        self.main_program["myTexture"] = 0
+
     def garbage_cleanup(self):
         super().garbage_cleanup() # A better way then using decorators in this context
         self.my_program.release()
@@ -53,19 +74,6 @@ void main(){d_update
         self.my_vao.release()
         self.new_texture.release()
 
-    @Main.d_draw
-    def draw(self):
-
-        self.framebuffer.use()
-        self.start_texture.use(location=0)
-        self.my_program["myTexture"] = 0
-        self.my_vao.render(mgl.TRIANGLE_STRIP)
-
-        self.ctx.screen.clear(red=0.0, green=0.0, blue=0.0, alpha=1.0)
-        self.ctx.screen.use()
-
-        self.framebuffer.color_attachments[0].use(location=0)
-        self.main_program["myTexture"] = 0
 
 
 if __name__ == "__main__":
