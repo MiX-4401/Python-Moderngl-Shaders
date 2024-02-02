@@ -10,7 +10,7 @@ from _lib import Main
 import moderngl as mgl
 import pygame
 
-from shaderPasses.gaussianBlur import GaussianBlur
+from _shaderPasses.gaussianBlur import GaussianBlur
 
 class ShaderProgram(Main):
     program_frag: str = """
@@ -68,8 +68,10 @@ void main(){
         # Render start_texture with my_program to final_texture
         self.my_vao.render(mgl.TRIANGLE_STRIP)
 
+
         # Shader pass
-        self.framebuffer = ColourInvert(ctx=self.ctx).run(framebuffer=self.framebuffer)
+        GaussianBlur(ctx=self.ctx, size=self.new_texture.size).run(texture=self.start_texture, output=self.framebuffer.color_attachments[0])
+        
 
         # Clear screen
         self.ctx.screen.clear(red=0.0, green=0.0, blue=0.0, alpha=1.0)
@@ -86,5 +88,5 @@ if __name__ == "__main__":
         scale=1,
         flip=False,
         components=4,
-        path=r"_images\0NormalWall.png"
+        path=r"_images\0TextureWall.png"
     ).run()
