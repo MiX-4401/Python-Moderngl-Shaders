@@ -31,6 +31,10 @@ class ShaderPass:
 
         }
 
+        self.renderbuffers: dict = {
+
+        }
+
 
         self.load_shaders(paths=(
             r"_shaderPasses\__base_vert.vert",
@@ -79,8 +83,8 @@ class ShaderPass:
         program: mgl.Program = self.ctx.program(vertex_shader=vert, fragment_shader=frag)
         self.programs.update({name: program})
 
-    def create_vao(self, name:str, program: mgl.Program, buffer: mgl.Buffer, args):
-        vao: mgl.VertexArray = self.ctx.vertex_array(program, [(buffer, *args)])
+    def create_vao(self, name:str, program:str, buffer:mgl.Buffer, args):
+        vao: mgl.VertexArray = self.ctx.vertex_array(self.programs[program], [(self.buffers[buffer], *args)])
         self.vaos.update({name: vao})
 
     def create_buffer(self, name, array: numpy.array):
@@ -132,6 +136,9 @@ class ShaderPass:
         self.vaos[vao].render(mgl.TRIANGLE_STRIP)
 
         return framebuffer
+
+    def close(self):
+        self.garbage_collection()
 
     def __del__(self):
         self.garbage_collection()

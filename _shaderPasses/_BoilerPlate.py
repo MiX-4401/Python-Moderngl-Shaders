@@ -1,5 +1,5 @@
 
-from __shaderPasses._lib import ShaderPass
+from _shaderPasses._lib import ShaderPass
 import moderngl as mgl
 
 
@@ -12,12 +12,13 @@ class myshader(ShaderPass):
         ))
 
 
-    def run(self, framebuffer:mgl.Framebuffer, output:mgl.Framebuffer, **uniforms):
+    def run(self, texture:mgl.Texture, output:mgl.Framebuffer, **uniforms):
 
         # Added shennanigns
 
         # Write to output
-        output.write(self.framebuffers[""].color_attachments[0].read())
+        output.color_attachments[0].write(self.framebuffers[""].color_attachments[0].read())
+        self.close()
 
 
 
