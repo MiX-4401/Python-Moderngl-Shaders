@@ -8,3 +8,5 @@ Constantly expanding the library, new additions include:
  : shader passes
  -> Allows for complex shader passes to be rendered in any ShaderProgram
  -> Including: Bloom and Blur
+
+Written in Python, GLSL
