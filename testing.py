@@ -10,6 +10,7 @@ from _lib import Main
 import moderngl as mgl
 import pygame
 
+from _shaderPasses.bloom        import Bloom
 from _shaderPasses.gaussianBlur import GaussianBlur
 
 class ShaderProgram(Main):
@@ -39,6 +40,8 @@ void main(){
         self.new_texture.filter: tuple    = (mgl.NEAREST, mgl.NEAREST)
         self.framebuffer: mgl.Framebuffer = self.ctx.framebuffer(color_attachments=[self.new_texture])
 
+        Bloom(ctx=self.ctx, size=self.new_texture.size, components=self.new_texture.components).run(texture=self.start_texture, output=self.framebuffer, strength=0.2, threshold=0.6)
+
         # Create shader program
         self.my_program: mgl.Program     = self.ctx.program(vertex_shader=Main.main_vertex, fragment_shader=ShaderProgram.program_frag)
         self.my_vao:     mgl.VertexArray = self.ctx.vertex_array(self.my_program, [(self.quad_buffer, "2f 2f", "aPosition", "aTexCoord")])
@@ -57,21 +60,6 @@ void main(){
 
     @Main.d_draw
     def draw(self):
-        
-        # Ready render target
-        self.framebuffer.use()
-        
-        # Set uniforms
-        self.start_texture.use(location=0)
-        self.my_program["myTexture"] = 0
-        
-        # Render start_texture with my_program to final_texture
-        self.my_vao.render(mgl.TRIANGLE_STRIP)
-
-
-        # Shader pass
-        GaussianBlur(ctx=self.ctx, size=self.new_texture.size).run(texture=self.start_texture, output=self.framebuffer.color_attachments[0])
-        
 
         # Clear screen
         self.ctx.screen.clear(red=0.0, green=0.0, blue=0.0, alpha=1.0)
@@ -86,7 +74,7 @@ if __name__ == "__main__":
         caption="NA",
         swizzle="RGBA",
         scale=1,
-        flip=False,
+        flip=True,
         components=4,
-        path=r"_images\0TextureWall.png"
+        path=r"_images\test.png"
     ).run()
