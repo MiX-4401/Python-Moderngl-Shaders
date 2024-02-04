@@ -13,6 +13,7 @@ import pygame
 from _shaderPasses.bloom          import Bloom
 from _shaderPasses.gaussianBlur   import GaussianBlur
 from _shaderPasses.colourQuantise import ColourQuantise
+from _shaderPasses.dithering      import Dithering
 
 class ShaderProgram(Main):
     program_frag: str = """
@@ -41,17 +42,9 @@ void main(){
         self.new_texture.filter: tuple    = (mgl.NEAREST, mgl.NEAREST)
         self.framebuffer: mgl.Framebuffer = self.ctx.framebuffer(color_attachments=[self.new_texture])
 
-        ColourQuantise(ctx=self.ctx, size=self.new_texture.size, components=self.new_texture.components).run(
-            texture=self.start_texture, 
-            output=self.framebuffer, 
-            colours=[
-                (203/225, 255/225, 140/225),
-                (227/225, 227/225, 106/225),
-                (193/225, 98/225, 0/225),
-                (136/225, 22/225, 0/225),
-                (78/225,  1/225, 16/225)
-            ]
-        )
+        Dithering(ctx=self.ctx, size=self.new_texture.size, components=self.new_texture.components).run(texture=self.start_texture, output=self.framebuffer)
+
+        # ColourQuantise(ctx=self.ctx, size=self.new_texture.size, components=self.new_texture.components).run(texture=self.start_texture, output=self.framebuffer)
 
         # Create shader program
         self.my_program: mgl.Program     = self.ctx.program(vertex_shader=Main.main_vertex, fragment_shader=ShaderProgram.program_frag)

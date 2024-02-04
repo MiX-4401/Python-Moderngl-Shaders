@@ -1,8 +1,8 @@
 # version 460 core
 
 uniform sampler2D uTexture;
-uniform int uPalletSize = 5;
-uniform vec3 uPallet[6];
+uniform int uPalletSize = 2;
+uniform vec3 uPallet[2] = vec3[] (vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0));
 
 in vec2 uvs;
 out vec4 fColour;
