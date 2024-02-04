@@ -10,8 +10,9 @@ from _lib import Main
 import moderngl as mgl
 import pygame
 
-from _shaderPasses.bloom        import Bloom
-from _shaderPasses.gaussianBlur import GaussianBlur
+from _shaderPasses.bloom          import Bloom
+from _shaderPasses.gaussianBlur   import GaussianBlur
+from _shaderPasses.colourQuantise import ColourQuantise
 
 class ShaderProgram(Main):
     program_frag: str = """
@@ -40,7 +41,17 @@ void main(){
         self.new_texture.filter: tuple    = (mgl.NEAREST, mgl.NEAREST)
         self.framebuffer: mgl.Framebuffer = self.ctx.framebuffer(color_attachments=[self.new_texture])
 
-        Bloom(ctx=self.ctx, size=self.new_texture.size, components=self.new_texture.components).run(texture=self.start_texture, output=self.framebuffer, strength=0.2, threshold=0.6)
+        ColourQuantise(ctx=self.ctx, size=self.new_texture.size, components=self.new_texture.components).run(
+            texture=self.start_texture, 
+            output=self.framebuffer, 
+            colours=[
+                (203/225, 255/225, 140/225),
+                (227/225, 227/225, 106/225),
+                (193/225, 98/225, 0/225),
+                (136/225, 22/225, 0/225),
+                (78/225,  1/225, 16/225)
+            ]
+        )
 
         # Create shader program
         self.my_program: mgl.Program     = self.ctx.program(vertex_shader=Main.main_vertex, fragment_shader=ShaderProgram.program_frag)
@@ -73,8 +84,8 @@ if __name__ == "__main__":
     shader_program: ShaderProgram = ShaderProgram(
         caption="NA",
         swizzle="RGBA",
-        scale=1,
+        scale=0.5,
         flip=True,
-        components=4,
-        path=r"_images\test.png"
+        components=3,
+        path=r"_images\4TextureOutback.jpg"
     ).run()
