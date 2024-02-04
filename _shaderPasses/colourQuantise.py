@@ -25,7 +25,6 @@ class ColourQuantise(ShaderPass):
         if type(colours) == list:
             self.render_direct(program="quantise", vao="quantise", framebuffer=self.framebuffers["quantise"], uTexture=0, uPallet=colours, uPalletSize=len(colours))
         else:
-            raise BaseException("Colours argument must be tuple... I will fix this in code later :}")
             self.render_direct(program="quantise", vao="quantise", framebuffer=self.framebuffers["quantise"], uTexture=0)
 
         # Write to output
