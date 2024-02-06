@@ -17,11 +17,11 @@ class ColourQuantise(ShaderPass):
         self.create_texture(name="quantise", size=size, components=components)
         self.create_framebuffer(name="quantise", attachments=self.textures["quantise"])
 
-    def run(self, texture:mgl.Texture, output:mgl.Framebuffer, closeness:int=1, colours:list="None", **uniforms):
+    def run(self, texture:mgl.Texture, output:mgl.Framebuffer, closeness:int=0, colours:list="None", **uniforms):
 
         """
             Returns a colour quantised texture based on the texture input.
-            Closeness represents how close new colours will be to the colour pallet
+            Closeness represents how close new colours will be to the colour pallet (either 0 or 1)
             Closeness defaults to range of 1, therefore uses the closest colour
 
             Colours   respresent a list of colours contains in tuples in the 0.0 to 1.0 range
