@@ -4,7 +4,6 @@ uniform sampler2D uTexture;
 uniform int uCloseness;
 uniform int uPalletSize = 10;
 uniform vec3 uPallet[10] = vec3[] (vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0));
-int a =uCloseness;
 
 in vec2 uvs;
 out vec4 fColour;
@@ -18,8 +17,9 @@ void main(){
     float b1 = colour.b;
 
     // FOR each colour pallet
-    float lowest = 1000.0; 
-    float index  = 0.0;
+    float lowest  = 1000.0;
+    float highest = 1000.0; 
+    int   indexes[2];
     for (int i=0; i<uPalletSize; i++){
         float r2 = uPallet[i].r;
         float g2 = uPallet[i].g;
@@ -31,12 +31,22 @@ void main(){
         // Set the lowest 
         if (dist < lowest){
             lowest = dist;
-            index  = i;
+            indexes[1] = indexes[0];
+            indexes[0] = i;
+        } 
+        else if (dist < highest){
+            highest = dist;
+            indexes[1] = i;
         }
     }
 
+    if (uCloseness == 0){
+        colour.rgb = uPallet[indexes[0]];
+    } else {
+        colour.rgb = uPallet[indexes[1]];
+    }
     // Set the colour to nearest to the colour pallet
-    colour.rgb = uPallet[int(index)];
+   
 
     // Release the finalColour
     fColour = vec4(colour.rgb, colour.a); 
