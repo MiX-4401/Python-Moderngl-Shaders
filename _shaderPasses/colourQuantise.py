@@ -17,15 +17,23 @@ class ColourQuantise(ShaderPass):
         self.create_texture(name="quantise", size=size, components=components)
         self.create_framebuffer(name="quantise", attachments=self.textures["quantise"])
 
-    def run(self, texture:mgl.Texture, output:mgl.Framebuffer, colours:list="None", **uniforms):
+    def run(self, texture:mgl.Texture, output:mgl.Framebuffer, closeness:int=1, colours:list="None", **uniforms):
 
+        """
+            Returns a colour quantised texture based on the texture input.
+            Closeness represents how close new colours will be to the colour pallet
+            Closeness defaults to range of 1, therefore uses the closest colour
+
+            Colours   respresent a list of colours contains in tuples in the 0.0 to 1.0 range
+            Colours   defaults to 1Bit colour range: white/black 
+        """
 
         texture.use(location=0)
 
         if type(colours) == list:
-            self.render_direct(program="quantise", vao="quantise", framebuffer=self.framebuffers["quantise"], uTexture=0, uPallet=colours, uPalletSize=len(colours))
+            self.render_direct(program="quantise", vao="quantise", framebuffer=self.framebuffers["quantise"], uTexture=0, uCloseness=closeness, uPallet=colours, uPalletSize=len(colours))
         else:
-            self.render_direct(program="quantise", vao="quantise", framebuffer=self.framebuffers["quantise"], uTexture=0)
+            self.render_direct(program="quantise", vao="quantise", framebuffer=self.framebuffers["quantise"], uTexture=0, uCloseness=closeness)
 
         # Write to output
         output.color_attachments[0].write(self.framebuffers["quantise"].color_attachments[0].read())
