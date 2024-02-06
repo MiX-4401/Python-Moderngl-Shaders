@@ -42,9 +42,14 @@ void main(){
         self.new_texture.filter: tuple    = (mgl.NEAREST, mgl.NEAREST)
         self.framebuffer: mgl.Framebuffer = self.ctx.framebuffer(color_attachments=[self.new_texture])
 
-        Dithering(ctx=self.ctx, size=self.new_texture.size, components=self.new_texture.components).run(texture=self.start_texture, output=self.framebuffer)
+        # Dithering(ctx=self.ctx, size=self.new_texture.size, components=self.new_texture.components).run(texture=self.start_texture, output=self.framebuffer)
 
-        # ColourQuantise(ctx=self.ctx, size=self.new_texture.size, components=self.new_texture.components).run(texture=self.start_texture, output=self.framebuffer)
+        ColourQuantise(ctx=self.ctx, size=self.new_texture.size, components=self.new_texture.components).run(texture=self.start_texture, output=self.framebuffer, closeness=1, colours=[
+            (225/225, 225/225, 225/225),
+            (0.0, 0.0, 0.0),
+            (0.3, 0.1, 0.7),
+            (0.7, 0.45, 0.11)
+        ])
 
         # Create shader program
         self.my_program: mgl.Program     = self.ctx.program(vertex_shader=Main.main_vertex, fragment_shader=ShaderProgram.program_frag)
