@@ -18,19 +18,28 @@ class Dithering(ShaderPass):
         self.create_vao(name="dither", program="dither", buffer="base", args=["2f 2f", "bPos", "bTexCoord"])
 
         self.create_texture(name="dither", size=size, components=components)
-        self.crete_texture(name="quantise", size=size, components=components)
+        self.create_texture(name="quantise1", size=size, components=components)
+        self.create_texture(name="quantise2", size=size, components=components)
         self.create_framebuffer(name="dither", attachments=[self.textures["dither"]])
-        self.create_framebuffer(name="quantise", attachments=[self.textures["quantised"]])
+        self.create_framebuffer(name="quantise1", attachments=[self.textures["quantise1"]])
+        self.create_framebuffer(name="quantise2", attachments=[self.textures["quantise2"]])
 
 
-    def run(self, texture:mgl.Texture, output:mgl.Framebuffer, colours:list="None", **uniforms):
+    def run(self, texture:mgl.Texture, output:mgl.Framebuffer, colours:list="None", detail:int=0, **uniforms):
 
+        # Validation checks
+        if detail not in [0,1,2]:
+            raise BaseException("Detail not in range 0-2")
+
+        # Get closest colour quantised textures 
         texture.use(location=0)
-        ColourQuantise(size=self.size, components=self.components).run(texture=texture, output=self.framebuffers["quantise"], colours=colours)
+        ColourQuantise(ctx=self.ctx, size=self.size, components=self.components).run(texture=texture, output=self.framebuffers["quantise1"], closeness=0, colours=colours)
+        ColourQuantise(ctx=self.ctx, size=self.size, components=self.components).run(texture=texture, output=self.framebuffers["quantise2"], closeness=1, colours=colours)
 
-        texture.use(location=0)
-        self.sample_framebuffer(framebuffer="quantise", location=1)
-        self.render_direct(program="dither", vao="dither", framebuffer=self.framebuffers["dither"], uOriginal=0, uQuantised=1)
+        # Get dither texture
+        self.sample_framebuffer(framebuffer="quantise1", location=1)
+        self.sample_framebuffer(framebuffer="quantise2", location=2)
+        self.render_direct(program="dither", vao="dither", framebuffer=self.framebuffers["dither"], uOriginal=0, uQuantise1=1, uQuantise2=2, uSize=self.size, uBayerLevel=detail)
 
         # Write to output
         output.color_attachments[0].write(self.framebuffers["dither"].color_attachments[0].read())
