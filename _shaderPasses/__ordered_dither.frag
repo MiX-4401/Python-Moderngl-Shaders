@@ -39,8 +39,11 @@ float getBayer2(int x, int y){
 float getBayer4(int x, int y){
     return float(bayer4[(x % 4) * 4 + (y % 4)]) * (1.0 / 16.0);
 };
-float getBayer8(int x, int y){
-    return float(bayer8[(x % 8) * 8 + (y % 8)]) * (1.0 / 64.0);
+float getBayer8(){
+    int x = int(mod(gl_FragCoord.x, 8));
+    int y = int(mod(gl_FragCoord.y, 8));
+    return float(bayer8[(x + y) * 8]) / 64.0;
+    //return float(bayer8[(x % 8) * 8 + (y % 8)]) * (1.0 / 64.0);
 };
 
 void main(){
@@ -71,7 +74,8 @@ void main(){
     float bayerValues[3] = {0.0, 0.0, 0.0};
     bayerValues[0] = getBayer2(x, y);
     bayerValues[1] = getBayer4(x, y);
-    bayerValues[2] = getBayer8(x, y);
+    //bayerValues[2] = getBayer8(x, y);
+    bayerValues[2] = getBayer8();
 
     // Find ecualidian distance between two colours
     float dist1 = sqrt(pow(r1-r2, 2) + pow(g1-g2, 2) + pow(b1-b2, 2));
@@ -81,7 +85,7 @@ void main(){
     float normalised = dist1 / dist2;
 
     // Choose either first quantised or second quantised colour
-    if (normalised < bayerValues[0]){
+    if (normalised < bayerValues[2]){
         fColour = vec4(quantise1.rgb, original.a);
     } else {
         fColour = vec4(quantise2.rgb, original.a);
