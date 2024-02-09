@@ -39,7 +39,7 @@ class Dithering(ShaderPass):
         # Get dither texture
         self.sample_framebuffer(framebuffer="quantise1", location=1)
         self.sample_framebuffer(framebuffer="quantise2", location=2)
-        self.render_direct(program="dither", vao="dither", framebuffer=self.framebuffers["dither"], uOriginal=0, uQuantise1=1, uQuantise2=2, uSize=self.size, uBayerLevel=detail)
+        self.render_direct(program="dither", vao="dither", framebuffer=self.framebuffers["dither"], uOriginal=0)
 
         # Write to output
         output.color_attachments[0].write(self.framebuffers["dither"].color_attachments[0].read())

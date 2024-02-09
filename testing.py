@@ -42,23 +42,25 @@ void main(){
         self.new_texture.filter: tuple    = (mgl.NEAREST, mgl.NEAREST)
         self.framebuffer: mgl.Framebuffer = self.ctx.framebuffer(color_attachments=[self.new_texture])
 
-        Dithering(ctx=self.ctx, size=self.new_texture.size, components=self.new_texture.components).run(
-            texture=self.start_texture,
-            output=self.framebuffer,
-            colours=[
-                (1.0, 1.0, 1.0),
-                (0.1, 0.15, 0.2),
-                (0.3, 0.1, 0.7),
-                (0.7, 0.45, 0.11)
-            ]
-        )
+        # Dithering(ctx=self.ctx, size=self.new_texture.size, components=self.new_texture.components).run(
+        #     texture=self.start_texture,
+        #     output=self.framebuffer,
+        #     colours=[
+        #         (1.0, 1.0, 1.0),
+        #         (0.1, 0.15, 0.2),
+        #         (0.3, 0.1, 0.7),
+        #         (0.7, 0.45, 0.11)
+        #     ]
+        # )
 
-        # ColourQuantise(ctx=self.ctx, size=self.new_texture.size, components=self.new_texture.components).run(texture=self.start_texture, output=self.framebuffer, closeness=0, colours=[
-        #     (1.0, 1.0, 1.0),
-        #     (0.1, 0.15, 0.2),
-        #     (0.3, 0.1, 0.7),
-        #     (0.7, 0.45, 0.11)
-        # ])
+        ColourQuantise(ctx=self.ctx, size=self.new_texture.size, components=self.new_texture.components).run(texture=self.start_texture, output=self.framebuffer, closeness=0, colours=[
+            # (1.0, 1.0, 1.0),
+            # (0.1, 0.15, 0.2),
+            # (0.3, 0.1, 0.7),
+            # (0.7, 0.45, 0.11)
+            (0.0, 0.0, 0.0),
+            (1.0, 1.0, 1.0)
+        ])
 
         # Create shader program
         self.my_program: mgl.Program     = self.ctx.program(vertex_shader=Main.main_vertex, fragment_shader=ShaderProgram.program_frag)
@@ -92,7 +94,7 @@ if __name__ == "__main__":
         caption="NA",
         swizzle="RGBA",
         scale=0.5,
-        flip=False,
+        flip=True,
         components=3,
         path=r"_images\4TextureOutback.jpg"
     ).run()
