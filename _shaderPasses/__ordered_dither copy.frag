@@ -46,6 +46,19 @@ float getBayer8(){
 
 void main(){
 
-    vec4 originalColour = texture(uOriginal, uvs).rgba;
-
+    // Sample textures
+    vec4 original = texture(uOriginal, uvs).rgba;
+    
+    float colours[2];
+    colours[0] = (original.r < 0.5) ? 0.0 : 1.0;
+    colours[1] = 1.0 - colours[0];
+    float value = getBayer4();
+    float dist  = abs(colours[0] - original.r);
+    
+    if (dist < value){
+        fColour = vec4(vec3(0.0, 0.0, 0.0), original.a);
+        
+    } else {
+        fColour = vec4(vec3(1.0, 1.0, 1.0), original.a);
+    }
 }
