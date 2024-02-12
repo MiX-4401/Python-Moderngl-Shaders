@@ -1,6 +1,7 @@
 # version 460 core
 
 uniform sampler2D uOriginal;
+uniform sampler2D qantised1;
 
 in vec2 uvs;
 out vec4 fColour;
@@ -47,5 +48,7 @@ float getBayer8(){
 void main(){
 
     vec4 originalColour = texture(uOriginal, uvs).rgba;
+
+    
 
 }
