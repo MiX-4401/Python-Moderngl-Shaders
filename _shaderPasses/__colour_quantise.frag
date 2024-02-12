@@ -1,7 +1,7 @@
 # version 460 core
 
 uniform sampler2D uTexture;
-uniform int uCloseness = 1;
+uniform int uPalletSize = 10;
 uniform vec3 uPallet[10] = vec3[] (vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0));
 
 in vec2 uvs;
@@ -9,59 +9,43 @@ out vec4 fColour;
 
 void main(){
 
-    // Sample texture
     vec4 colour = texture(uTexture, uvs).rgba;
 
-    // ==========================================
-    //             Find distances
-    // ==========================================
-    float distances[4];
-    for (int i=0; i<4; i++){
-        // Get euclidean distance between Colour and Pallet
-        //distances[i] = length(colour.rgb, uPallet[i].rgb); 
-        distances[i] = sqrt(
-            pow(colour.r - uPallet[i].r, 2) +
-            pow(colour.g - uPallet[i].g, 2) +
-            pow(colour.b - uPallet[i].b, 2)
-        ); 
-    }
+    float r1 = colour.r;
+    float g1 = colour.g;
+    float b1 = colour.b;
 
-    // ==========================================
-    // Sorting algorithm for two clostest colours
-    // ==========================================
-    float lowest  = distances[0];
-    float highest = distances[1];
-    int indexes[2] = {0, 1};
+    // FOR each colour pallet
+    float lowest  = 1000.0;
+    float highest = 1000.0; 
+    int   indexes[2];
+    for (int i=0; i<uPalletSize; i++){
+        float r2 = uPallet[i].r;
+        float g2 = uPallet[i].g;
+        float b2 = uPallet[i].b;
 
-    // CHECK: Swap initial values
-    if (highest < lowest){
-        float temp = lowest;
-        lowest  = highest;
-        highest = temp;
-        indexes[0] = 1;
-        indexes[1] = 0;
-    }
-
-    // Sort for two closest
-    for (int i=0; i<4; i++){
-        if (distances[i] < lowest){
-            highest = lowest;
-            lowest  = distances[i];
+        // Get Euclidean Distance between sample colour and pallets
+        float dist = sqrt(pow(r1-r2, 2) + pow(g1-g2, 2) + pow(b1-b2, 2));
+        
+        // Set the lowest 
+        if (dist < lowest){
+            lowest = dist;
             indexes[1] = indexes[0];
             indexes[0] = i;
-        }
-        else if (distances[i] < highest){
-            highest = distances[i];
+        } 
+        else if (dist < highest){
+            highest = dist;
             indexes[1] = i;
         }
     }
 
-    if (uCloseness == 0){
-        colour.rgb = uPallet[indexes[0]];
-    } else {
-        colour.rgb = uPallet[indexes[1]];
-    }
 
-    fColour = vec4(colour.rgb, colour.a);
+    colour.rgb = uPallet[indexes[0]];
+
+    // Release the finalColour
+    fColour = vec4(colour.rgb, colour.a); 
 
 }
+
+
+
