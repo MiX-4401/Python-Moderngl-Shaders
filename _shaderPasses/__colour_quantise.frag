@@ -1,8 +1,9 @@
 # version 460 core
 
 uniform sampler2D uTexture;
+uniform int  uCloseness;
 uniform int  uPalletSize = 10;
-uniform vec3 uPallet[10];
+uniform vec3 uPallet[10] = {vec3(1.0), vec3(0.0), vec3(0.0), vec3(0.0), vec3(0.0), vec3(0.0), vec3(0.0), vec3(0.0), vec3(0.0), vec3(0.0)};
 
 in vec2 uvs;
 out vec4 fColour;
@@ -15,28 +16,32 @@ void main(){
 
     vec4 colour = texture(uTexture, uvs).rgba;
 
-    // Get distances
-    float distances[int(uPalletSize)];
-    for (int i=0; i<uPalletSize; i++){
-        distances[i] = getDistance(colour.rgb, uPallet[i]);
-    }
-
     // Sorting Algorithm
     float distColours[2]    = {1000.0, 1000.0};
-    vec3  closestColours[2] = {vec3(0.0), vec3(0.0)};
+    vec3  closestColours[2] = {vec3(0.0), vec3(1.0)};
     
     for (int i=0; i<uPalletSize; i++){
-        if (distances[i] < distColours[0]){
+
+        // Get colour /- pallet distance
+        float dist = getDistance(colour.rgb, uPallet[i]);
+
+        if (dist < distColours[0]){
             distColours[1]    = distColours[0];
             closestColours[1] = closestColours[0];
-            distColours[0]    = distances[i];
+            distColours[0]    = dist;
             closestColours[0] = uPallet[i];
-        } else if (distances[i] < distColours[1]){
-            distColours[1]    = distances[i];
+        } 
+        else if (dist < distColours[1]){
+            distColours[1]    = dist;
             closestColours[1] = uPallet[i];
         }
     }
 
-    fColour = vec4(closestColours[1], colour.a);
+    if (uCloseness == 0){
+        fColour = vec4(closestColours[0], colour.a);
+    } else {
+        fColour = vec4(closestColours[1], colour.a);
+    }
+    
 
 }
