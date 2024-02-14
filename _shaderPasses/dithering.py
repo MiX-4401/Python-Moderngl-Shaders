@@ -25,7 +25,7 @@ class Dithering(ShaderPass):
         self.create_framebuffer(name="quantise2", attachments=[self.textures["quantise2"]])
 
 
-    def run(self, texture:mgl.Texture, output:mgl.Framebuffer, colours:list=[(0.0, 0.0, 0.0), (1.0, 1.0, 1.0)], bayer:int=1, **uniforms):
+    def run(self, texture:mgl.Texture, output:mgl.Framebuffer, colours:list=[(0.0, 0.0, 0.0), (1.0, 1.0, 1.0)], bayer:int=2, **uniforms):
 
         # Validation checks
 
