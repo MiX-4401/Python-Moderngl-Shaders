@@ -3,6 +3,7 @@
 uniform sampler2D uOriginal;
 uniform sampler2D uClosest;
 uniform sampler2D uSecond;
+uniform int uBayer;
 
 in vec2 uvs;
 out vec4 fColour;
@@ -37,7 +38,7 @@ float getBayer2(){
 };
 float getBayer4(){
     int x = int(mod(gl_FragCoord.x, 4));
-    int y = int(mod(1.0 - gl_FragCoord.y, 4));
+    int y = int(mod(gl_FragCoord.y, 4));
     return float(bayer4[(x + y) * 4]) / 16.0;
 };
 float getBayer8(){
@@ -55,19 +56,27 @@ void main(){
 
     // Sample colours
     vec4 original = texture(uOriginal, uvs).rgba;
-    vec3 closest  = texture(uClosest, uvs).rgb;
-    vec3 second   = texture(uSecond, uvs).rgb;
+    vec3 closest  = texture(uClosest, vec2(uvs.x, 1.0 - uvs.y)).rgb;
+    vec3 second   = texture(uSecond,  vec2(uvs.x, 1.0 - uvs.y)).rgb;
 
+    // Get Bayer values
     float value = getBayer4();
+    if (int(uBayer) == 1){
+        value = getBayer2();
+    } else if (int(uBayer) == 2){
+        value = getBayer4();
+    } else if (int(uBayer) == 3){
+        value = getBayer8();
+    }
+    
 
     float dist1 = getDistance(original.rgb, closest);
     float dist2 = getDistance(second, closest);
     float normalised = dist1 / dist2;
 
     if (normalised < value){
-        fColour = vec4(closest, original.a);
+        fColour = vec4(closest.rgb, original.a);
     } else {
-        fColour = vec4(second, original.a);
+        fColour = vec4(second.rgb, original.a);
     }
-
 }

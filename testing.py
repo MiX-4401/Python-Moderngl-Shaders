@@ -49,15 +49,24 @@ void main(){
         #     (0.3, 0.1, 0.7),
         #     (0.7, 0.45, 0.11)
         # ])
+
         # ColourQuantise(ctx=self.ctx, size=self.new_texture.size, components=self.new_texture.components).run(texture=self.start_texture, output=self.framebuffer, closeness=0)
+
+
 
         Dithering(ctx=self.ctx, size=self.new_texture.size, components=self.new_texture.components).run(
             texture=self.start_texture,
             output=self.framebuffer,
             colours=[
+                #(0.0, 0.0, 0.0),
+                #(1.0, 1.0, 1.0),
+                (0.1, 0.15, 0.2),
                 (0.0, 0.0, 0.0),
                 (1.0, 1.0, 1.0),
-            ]
+                (0.3, 0.1, 0.7),
+                (0.7, 0.45, 0.11)
+            ],
+            bayer=1
         )
 
         # Create shader program
