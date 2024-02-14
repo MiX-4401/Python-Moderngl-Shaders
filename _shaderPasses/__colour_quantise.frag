@@ -2,8 +2,8 @@
 
 uniform sampler2D uTexture;
 uniform int  uCloseness;
-uniform int  uPalletSize = 10;
-uniform vec3 uPallet[10] = {vec3(1.0), vec3(0.0), vec3(0.0), vec3(0.0), vec3(0.0), vec3(0.0), vec3(0.0), vec3(0.0), vec3(0.0), vec3(0.0)};
+uniform int  uPalletSize;
+uniform vec3 uPallet[10];
 
 in vec2 uvs;
 out vec4 fColour;

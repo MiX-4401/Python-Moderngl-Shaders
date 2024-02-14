@@ -17,7 +17,7 @@ class ColourQuantise(ShaderPass):
         self.create_texture(name="quantise", size=size, components=components)
         self.create_framebuffer(name="quantise", attachments=self.textures["quantise"])
 
-    def run(self, texture:mgl.Texture, output:mgl.Framebuffer, closeness:int=0, colours:list="None", **uniforms):
+    def run(self, texture:mgl.Texture, output:mgl.Framebuffer, closeness:int=0, colours:list=[(0.0, 0.0, 0.0), (1.0, 1.0, 1.0)], **uniforms):
 
         """
             Returns a colour quantised texture based on the texture input.
@@ -29,11 +29,7 @@ class ColourQuantise(ShaderPass):
         """
 
         texture.use(location=0)
-
-        if type(colours) == list:
-            self.render_direct(program="quantise", vao="quantise", framebuffer=self.framebuffers["quantise"], uTexture=0, uCloseness=closeness, uPallet=colours, uPalletSize=len(colours))
-        else:
-            self.render_direct(program="quantise", vao="quantise", framebuffer=self.framebuffers["quantise"], uTexture=0, uCloseness=closeness)
+        self.render_direct(program="quantise", vao="quantise", framebuffer=self.framebuffers["quantise"], uTexture=0, uCloseness=closeness, uPallet=colours, uPalletSize=len(colours))
 
         # Write to output
         output.color_attachments[0].write(self.framebuffers["quantise"].color_attachments[0].read())
