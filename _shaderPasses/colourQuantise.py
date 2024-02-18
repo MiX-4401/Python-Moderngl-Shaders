@@ -17,6 +17,9 @@ class ColourQuantise(ShaderPass):
         self.create_texture(name="quantise", size=size, components=components)
         self.create_framebuffer(name="quantise", attachments=self.textures["quantise"])
 
+    def normalise(self, colour:tuple) -> tuple:
+        return (colour[0]/225, colour[1]/225, colour[2]/225)
+
     def run(self, texture:mgl.Texture, output:mgl.Framebuffer, closeness:int=0, colours:list=[(0.0, 0.0, 0.0), (1.0, 1.0, 1.0)], **uniforms):
 
         """
@@ -28,8 +31,10 @@ class ColourQuantise(ShaderPass):
             Colours   defaults to 1Bit colour range: white/black 
         """
 
+        normalised_colours: list = [self.normalise(colour=c) for c in colours]
+
         texture.use(location=0)
-        self.render_direct(program="quantise", vao="quantise", framebuffer=self.framebuffers["quantise"], uTexture=0, uCloseness=closeness, uPallet=colours, uPalletSize=len(colours))
+        self.render_direct(program="quantise", vao="quantise", framebuffer=self.framebuffers["quantise"], uTexture=0, uCloseness=closeness, uPallet=normalised_colours, uPalletSize=len(colours))
 
         # Write to output
         output.color_attachments[0].write(self.framebuffers["quantise"].color_attachments[0].read())
