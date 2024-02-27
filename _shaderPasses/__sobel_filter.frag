@@ -21,7 +21,7 @@ void main(){
     vec4 colour = texture(uTexture, uvs).rgba;
 
     // Convert texture to greyscale
-    // float greyScale = dot(colour.rgb, vec3(0.2126, 0.7152, 0.0722));
+    float greyScale = dot(colour.rgb, vec3(0.2126, 0.7152, 0.0722));
 
-    vec4 fColour = vec4(colour);
+    fColour = vec4(vec3(greyScale), colour.a);
 }
