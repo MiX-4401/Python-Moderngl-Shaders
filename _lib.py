@@ -103,8 +103,8 @@ void main(){
             raise f"Invalid scaling method {self.method} and not ['nearest', 'linear]"
         return start_texture
     
-    def save_as_file(self, framebuffer:mgl.Framebuffer, components:int=4, mode:str="RGBA", location:str=""):
-        Image.frombytes(mode=mode, size=(framebuffer.size[0], framebuffer.size[1]), data=framebuffer.color_attachments[0].read(components=components)).save(fp=location)
+    def save_as_file(self, framebuffer:moderngl.Framebuffer, components:int=4, mode:str="RGBA", location:str=""):
+        Image.frombytes(mode=mode, size=(framebuffer.size[0], framebuffer.size[1]), data=framebuffer.color_attachments[0].read()).save(fp=location)
         self.garbage_cleanup()
         pygame.quit()
         exit()

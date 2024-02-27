@@ -14,6 +14,7 @@ from _shaderPasses.bloom          import Bloom
 from _shaderPasses.gaussianBlur   import GaussianBlur
 from _shaderPasses.colourQuantise import ColourQuantise
 from _shaderPasses.dithering      import Dithering
+from _shaderPasses.sobelFilter    import SobelFilter
 
 class ShaderProgram(Main):
     program_frag: str = """
@@ -49,21 +50,9 @@ void main(){
             (67.5, 22.5, 157.5),
             (157.5, 101.25, 24.75),
         ])
+        # SobelFilter(ctx=self.ctx, size=self.new_texture.size, components=self.new_texture.components).run(texture=self.start_texture, output=self.framebuffer)
 
 
-
-        # Dithering(ctx=self.ctx, size=self.new_texture.size, components=self.new_texture.components).run(
-        #     texture=self.start_texture,
-        #     output=self.framebuffer,
-        #     colours=[
-        #         (22.5, 33.75, 45.0),
-        #         (0.0, 0.0, 0.0),
-        #         (225.0, 225.0, 225.0),
-        #         (67.5, 22.5, 157.5),
-        #         (157.5, 101.25, 24.75),
-        #     ],
-        #     bayer=2
-        # )
 
         # Create shader program
         self.my_program: mgl.Program     = self.ctx.program(vertex_shader=Main.main_vertex, fragment_shader=ShaderProgram.program_frag)
