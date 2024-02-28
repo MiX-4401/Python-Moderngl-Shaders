@@ -46,9 +46,9 @@ void main(){
 
         SobelFilter(ctx=self.ctx, size=self.new_texture.size, components=self.new_texture.components).run(
             texture=self.start_texture,
-            output=self.framebuffer
+            output=self.framebuffer,
+            threshold=0.2
         )
-
 
         # Create shader program
         self.my_program: mgl.Program     = self.ctx.program(vertex_shader=Main.main_vertex, fragment_shader=ShaderProgram.program_frag)
