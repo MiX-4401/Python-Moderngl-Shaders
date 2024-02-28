@@ -2,7 +2,6 @@
 from _shaderPasses._lib import ShaderPass
 import moderngl as mgl
 
-
 from _shaderPasses.greyScale import GreyScale
 from _shaderPasses.gaussianBlur import GaussianBlur
 
