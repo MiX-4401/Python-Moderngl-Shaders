@@ -44,7 +44,8 @@ void main(){
 
     // Thresholding for black and white outputs
     if (g > uThreshold){
-        fColour = vec4(1.0, 1.0, 1.0, 1.0);
+        // fColour = vec4(1.0, 1.0, 1.0, 1.0);
+        fColour = vec4(g, g, g, 1.0);
     } else {
         fColour = vec4(0.0, 0.0, 0.0, 1.0);
     }

@@ -47,7 +47,7 @@ void main(){
         SobelFilter(ctx=self.ctx, size=self.new_texture.size, components=self.new_texture.components).run(
             texture=self.start_texture,
             output=self.framebuffer,
-            threshold=0.2
+            threshold=0.1
         )
 
         # Create shader program
@@ -76,6 +76,8 @@ void main(){
         # Render final_texture to screen
         self.framebuffer.color_attachments[0].use(location=0)
         self.main_program["myTexture"] = 0
+
+        self.save_as_file(self.framebuffer, location="a.png")
 
 if __name__ == "__main__":
     shader_program: ShaderProgram = ShaderProgram(
