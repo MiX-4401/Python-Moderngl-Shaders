@@ -1,15 +1,26 @@
-from math import *
 
-
-def length(c1: tuple, c2: tuple):
-    return sqrt(pow(c1[0]-c2[0], 2) + pow(c1[1]-c2[1], 2) + pow(c1[2]-c2[2], 2))
-
-colours: list = [
-    (0.3, 0.1, 0.7),
-    (1.0, 1.0, 1.0),
-    (0.7, 0.45, 0.11),
-    (0.1, 0.15, 0.2)
+kernalX: list = [
+    [-1, 0, 1],
+    [-2, 0, 2],
+    [-1, 0, 1]
+] 
+kernalY: list = [
+    [-1, 2, 1],
+    [0, 0, 0],
+    [-1, 2, 1],
 ]
 
-for x in colours:
-    print(round(length(c1=(0.3, 0.54, 0.24), c2=x), 2))
+resolution: tuple = (100, 100)
+fragcoord:  tuple = (0.5, 0.6)
+i, j = (-1, -1)
+for i in [-1, 0, 1]:
+    for j in [-1, 0, 1]:
+        
+        x: float = (fragcoord[0] + float(i)) / resolution[0]
+        y: float = (fragcoord[1] + float(j)) / resolution[1]
+        
+        print((i,j), fragcoord, (x, y))
+
+    #     j += 1
+    # i += 1
+
