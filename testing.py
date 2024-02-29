@@ -18,18 +18,18 @@ from _shaderPasses.sobelFilter    import SobelFilter
 from _shaderPasses.contrast       import Contrast
 
 class ShaderProgram(Main):
-    program_frag: str = """
+    frag: str = """
         # version 460 core
 
-        uniform sampler2D myTexture;
+        uniform sampler2D uTexture;
 
         in vec2 uvs;
         out vec4 fColour;
 
         void main(){
-            vec4 colour = texture(myTexture, uvs).rgba;
+            vec4 colour = texture(uTexture, uvs).rgba;
 
-            fColour = vec4(colour.rgb, colour.a);
+            fColour = vec4(1.0 - colour.rgb, colour.a);
     }
 """
 
@@ -40,7 +40,7 @@ class ShaderProgram(Main):
         self.load_program()
 
         self.create_program(title="new", vert=Main.vert, frag=ShaderProgram.frag)
-        self.create_vao(title="new", program="new", buffer="new", args=["2f 2f", "bPosition", "bTexCoord"])
+        self.create_vao(title="new", program="new", buffer="main", args=["2f 2f", "iPosition", "iTexCoord"])
         self.create_texture(title="new", size=self.textures["main"].size, components=self.textures["main"].components)
         self.create_framebuffer(title="new", attachments=self.textures["new"])
 
@@ -51,8 +51,15 @@ class ShaderProgram(Main):
         super().update()
 
     def draw(self):
-        # Draw content shenanigans
 
+        # Draw content shenanigans
+        self.framebuffers["new"].use()
+        self.textures["main"].use(location=0)
+        self.programs["new"]["uTexture"] = 0
+        self.vaos["new"].render(mgl.TRIANGLE_STRIP)
+
+        self.textures["new"].use(location=0)
+        self.programs["main"]["uTexture"] = 0
         super().draw()
         
 
@@ -63,6 +70,6 @@ if __name__ == "__main__":
         scale=1.0,
         flip=False,
         components=4,
-        path=r"_images\0TextureWall.png",
+        media=r"_images\0TextureWall.png",
         fps=30,
     ).run()

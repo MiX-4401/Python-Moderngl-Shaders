@@ -12,41 +12,42 @@ class Main():
     vert: str = """
         # version 460 core
 
-        in vec2 bPosition;
-        in vec2 bTexCoord;
+        in vec2 iPosition;
+        in vec2 iTexCoord;
         out vec2 uvs;
 
         void main(){
 
-            uvs = aTexCoord;
+            uvs = iTexCoord;
 
-            gl_Position = vec4(bPosition, 0.0, 1.0);
+            gl_Position = vec4(iPosition, 0.0, 1.0);
         }
     """
 
     frag: str = """
         # version 460 core
 
-        uniform sampler2D myTexture;
+        uniform sampler2D uTexture;
         in vec2 uvs;
         out vec4 fColour;
 
         void main(){
 
-            vec4 colour = texture(myTexture, uvs).rgba; 
+            vec4 colour = texture(uTexture, uvs).rgba; 
 
             fColour = vec4(colour.rgb, colour.a);
         }
     """
 
     def __init__(self, media:str, scale:int=1, caption:str="NA", swizzle:str="RGBA", flip:bool=False, components:int=4, method:str="nearest", fps:int=60):
-        self.path:    str = media
+        self.media:    str = media
         self.caption: str = caption
         self.swizzle: str = swizzle
         self.scale:   int = scale
         self.fps:     int = fps
         self.flip:   bool = flip
         self.method:  str = method
+        self.components: int = components
 
         self.framebuffers: dict = {}
         self.textures:      dict = {}
@@ -95,15 +96,15 @@ class Main():
     def load_pygame(self):
         # Pygame Boilerplate
         self.clock: pg.time.Clock = pg.time.Clock()
-        self.screen: pg.Surface = pg.display.set_mode((), pg.DOUBLEBUF | pg.OPENGL)
+        self.screen: pg.Surface = pg.display.set_mode(self.content.size, pg.DOUBLEBUF | pg.OPENGL)
         pg.display.set_caption(title=self.caption)
 
     def load_moderngl(self):
         # Moderngl Boilerplate
         self.ctx: mgl.Context = mgl.create_context()
-        self.create_program(title="main", vert=ShaderProgram.vert, frag=ShaderProgram.frag)
+        self.create_program(title="main", vert=Main.vert, frag=Main.frag)
         self.create_buffer(title="main", data=np.array([-1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, -1.0, -1.0, 0.0, 1.0, 1.0, -1.0, 1.0, 1.0], dtype="f4"))
-        self.create_vao(title="main", program="main", args=["2f 2f", "bPosition", "bTexCoord"])
+        self.create_vao(title="main", program="main", buffer="main", args=["2f 2f", "iPosition", "iTexCoord"])
         self.ctx.enable(mgl.BLEND)
 
         # Create main texture/framebuffer
@@ -126,11 +127,12 @@ class Main():
     def create_program(self, title:str, vert:str, frag:str):
         self.programs[title]: mgl.Program = self.ctx.program(vertex_shader=vert, fragment_shader=frag)
     
-    def create_vaos(self, title:str, program:str, buffer:str, args:list=[]):
-        self.vaos[title]: mgl.VertexArray = self.ctx.vertex_array(program=self.programs[program], args=[(self.buffers[buffer], *args)])
-   
+    def create_vao(self, title:str, program:str, buffer:str, args:list=[]):
+        self.vaos[title]: mgl.VertexArray = self.ctx.vertex_array(self.programs[program], [(self.buffers[buffer], *args)])
+        
     def create_buffer(self, title:str, data:np.array):
         self.buffers[title]: mgl.Buffers = self.ctx.buffer(data=data)
+
 
     def next_frame(self):
 
@@ -168,9 +170,10 @@ class Main():
 
     def update(self):
         self.time += 1
-        pg.display.set_captin(f"{self.caption} | FPS: {round(self.clock.get_fps())} | TIME: {self.time}")
+        pg.display.set_caption(f"{self.caption} | FPS: {round(self.clock.get_fps())} | TIME: {self.time}")
 
     def draw(self):
+
         self.ctx.screen.use()
         self.ctx.screen.clear()
         self.vaos["main"].render(mode=mgl.TRIANGLE_STRIP)
