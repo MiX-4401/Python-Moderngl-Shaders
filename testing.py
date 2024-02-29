@@ -10,6 +10,9 @@ from _lib import Main
 import moderngl as mgl
 import pygame
 
+import cv2
+from PIL import Image
+
 from _shaderPasses.bloom          import Bloom
 from _shaderPasses.gaussianBlur   import GaussianBlur
 from _shaderPasses.colourQuantise import ColourQuantise
@@ -34,8 +37,9 @@ void main(){
 }
 """
 
-    def __init__(self, caption:str, swizzle:str, scale:int, flip:bool=True, components:int=3, method:str="nearest", path:str="None", url:str="None"):
+    def __init__(self, caption:str, swizzle:str, scale:int, fps:int=60, flip:bool=True, components:int=3, method:str="nearest", path:str="None", url:str="None"):
         super().__init__(path=path, url=url, scale=scale, caption=caption, flip=flip, swizzle=swizzle, components=components, method=method)
+        self.fps = 30
 
         self.load_program()
 
@@ -44,16 +48,10 @@ void main(){
         self.new_texture.filter: tuple    = (mgl.NEAREST, mgl.NEAREST)
         self.framebuffer: mgl.Framebuffer = self.ctx.framebuffer(color_attachments=[self.new_texture])
 
-        SobelFilter(ctx=self.ctx, size=self.new_texture.size, components=self.new_texture.components).run(
-            texture=self.start_texture,
-            output=self.framebuffer,
-            threshold=0.1
-        )
-
         # Create shader program
         self.my_program: mgl.Program     = self.ctx.program(vertex_shader=Main.main_vertex, fragment_shader=ShaderProgram.program_frag)
         self.my_vao:     mgl.VertexArray = self.ctx.vertex_array(self.my_program, [(self.quad_buffer, "2f 2f", "aPosition", "aTexCoord")])
-
+        self.cap = cv2.VideoCapture(r"C:\Users\ejrad\OneDrive\Captures\Captures\Halo Infinite 2022-07-24 12-09-42.mp4")
     
     def garbage_cleanup(self):
         super().garbage_cleanup() # A better way then using decorators in this context
@@ -64,7 +62,15 @@ void main(){
 
     @Main.d_update
     def update(self):
-        pass
+        
+        succes, frame = self.cap.read()
+        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        frame_rgb = cv2.resize(frame_rgb, self.start_texture.size)
+        image = Image.fromarray(frame_rgb)
+        image = image.transpose(Image.FLIP_TOP_BOTTOM)
+        self.start_texture.write(image.tobytes())
+
+
 
     @Main.d_draw
     def draw(self):
@@ -73,18 +79,24 @@ void main(){
         self.ctx.screen.clear(red=0.0, green=0.0, blue=0.0, alpha=1.0)
         self.ctx.screen.use()
 
+        SobelFilter(ctx=self.ctx, size=self.new_texture.size, components=self.new_texture.components).run(
+            texture=self.start_texture,
+            output=self.framebuffer,
+            threshold=0.005,
+            blur_strength=(1,2,2)
+        )
+
         # Render final_texture to screen
         self.framebuffer.color_attachments[0].use(location=0)
         self.main_program["myTexture"] = 0
-
-        self.save_as_file(self.framebuffer, location="a.png")
 
 if __name__ == "__main__":
     shader_program: ShaderProgram = ShaderProgram(
         caption="NA",
         swizzle="RGBA",
-        scale=0.5,
-        flip=True,
+        scale=0.75,
+        flip=False,
         components=3,
-        path=r"_images\4TextureOutback.jpg"
+        path=r"_images\Untitled.png",
+        fps=30,
     ).run()

@@ -39,7 +39,7 @@ void main(){
 }
 """
 
-    def __init__(self, caption:str, swizzle:str, scale:int, flip:bool=True, components:int=3, method:str="nearest", path:str="None", url:str="None", headless:bool=False):
+    def __init__(self, caption:str, swizzle:str, scale:int, fps:int=60, flip:bool=True, components:int=3, method:str="nearest", path:str="None", url:str="None", headless:bool=False):
         self.headless:   bool = headless
         self.caption:    str  = caption
         self.url:        str  = url
@@ -50,6 +50,7 @@ void main(){
         self.method:     int  = method
         self.time:       int  = 0
         self.flip:       bool = flip
+        self.fps:        int  = fps
 
     def load_program(self):
 
@@ -64,7 +65,7 @@ void main(){
         if self.headless:
             self.screen: pygame.Surface    = pygame.display.set_mode(self.image_data.size, pygame.DOUBLEBUF | pygame.OPENGL | pygame.NOFRAME)
         else: self.screen: pygame.Surface    = pygame.display.set_mode(self.image_data.size, pygame.DOUBLEBUF | pygame.OPENGL)
-        self.fps: int = 60
+
         pygame.display.set_caption(self.caption)
 
         # Moderngl Boilerplate
