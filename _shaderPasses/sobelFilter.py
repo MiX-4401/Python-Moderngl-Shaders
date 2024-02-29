@@ -26,7 +26,7 @@ class SobelFilter(ShaderPass):
         self.create_framebuffer(name="gaussian",  attachments=[self.textures["gaussian"]])
 
 
-    def run(self, texture:mgl.Texture, output:mgl.Framebuffer, threshold:float=1.0, **uniforms):
+    def run(self, texture:mgl.Texture, output:mgl.Framebuffer, threshold:float=1.0, blur_strength:tuple=(1,3,3), **uniforms):
 
         # Added shennanigns
         texture.use(location=0)
@@ -39,7 +39,7 @@ class SobelFilter(ShaderPass):
         GaussianBlur(ctx=self.ctx, size=self.size, components=self.components).run(
             texture=self.textures["greyscale"],
             output=self.framebuffers["gaussian"],
-            x_strength=3, y_strength=3, x=1
+            x_strength=blur_strength[1], y_strength=blur_strength[2], x=blur_strength[0]
         )
 
         self.sample_framebuffer(framebuffer="gaussian", location=0)
