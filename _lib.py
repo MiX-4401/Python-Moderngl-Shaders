@@ -54,6 +54,7 @@ class ShaderProgram():
         self.vaos:         dict = {}
         self.buffers:      dict = {}
 
+        self.time: int = 0
         self.content: Image.Image = None
 
     def load_program(self):
@@ -61,7 +62,6 @@ class ShaderProgram():
         self.load_pygame()
         self.load_moderngl()
 
-        
     def load_media(self):
         # Get media content
 
@@ -101,6 +101,11 @@ class ShaderProgram():
         self.create_vao(title="main", program="main", args=["2f 2f", "bPosition", "bTexCoord"])
         self.ctx.enable(mgl.BLEND)
 
+        # Create main texture/framebuffer
+        self.create_texture(title="main", size=self.content.size, components=self.components, data=self.content.tobytes())
+        self.create_framebuffer(title="main", attachments=[self.textures["main"]])
+        self.textures["main"].swizzle: str = self.swizzle
+
     def create_framebuffer(self, title:str, attachments:list=[]):
         self.framebuffers[title]: mgl.Framebuffer = self.ctx.framebuffer(color_attachments=attachments)
     
@@ -111,7 +116,7 @@ class ShaderProgram():
         self.programs[title]: mgl.Program = self.ctx.program(vertex_shader=vert, fragment_shader=frag)
     
     def create_vaos(self, title:str, program:str, buffer:str, args:list=[]):
-        self.vaos[title]: mgl.VertexArray = self.ctx.vertex_array(program=self.programs[program], [(self.buffers[buffer], *args)])
+        self.vaos[title]: mgl.VertexArray = self.ctx.vertex_array(program=self.programs[program], args=[(self.buffers[buffer], *args)])
    
     def create_buffer(self, title:str, data:np.array):
         self.buffers[title]: mgl.Buffers = self.ctx.buffer(data=data)
@@ -137,10 +142,14 @@ class ShaderProgram():
                 exit()
 
     def update(self):
-        pass
+        self.time += 1
+        pg.display.set_captin(f"{self.caption} | FPS: {round(self.clock.get_fps())} | TIME: {self.time}")
 
     def draw(self):
-        pass
+        self.ctx.screen.use()
+        self.ctx.screen.clear()
+        self.vaos["main"].render(mode=mgl.TRIANGLE_STRIP)
+        pg.display.flip()
 
     def run(self):
         while True:
