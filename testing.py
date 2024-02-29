@@ -29,7 +29,7 @@ class ShaderProgram(Main):
         void main(){
             vec4 colour = texture(uTexture, uvs).rgba;
 
-            fColour = vec4(1.0 - colour.rgb, colour.a);
+            fColour = vec4(colour.rgb, colour.a);
     }
 """
 
@@ -68,8 +68,8 @@ if __name__ == "__main__":
         caption="I'm Testing Here!",
         swizzle="RGBA",
         scale=1.0,
-        flip=False,
-        components=4,
-        media=r"_images\0TextureWall.png",
-        fps=30,
+        flip=True,
+        components=3,
+        media=r"",
+        fps=60,
     ).run()

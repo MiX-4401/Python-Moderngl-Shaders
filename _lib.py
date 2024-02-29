@@ -58,6 +58,7 @@ class Main():
         self.time: int = 0
         self.content: Image.Image = None
         self.media_type: str = None
+        self.video_capture: cv2.VideoCapture = None
 
     def load_program(self):
         self.load_media()
@@ -75,17 +76,17 @@ class Main():
 
         elif self.media.split(".")[-1] in ["mp4"]:
             # Load local video file
-            capture: cv2.VideoCapture = cv2.VideoCapture(self.load_media)
+            capture: cv2.VideoCapture = cv2.VideoCapture(self.media)
             success, frame = capture.read()
             frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             content: Image.Image = Image.fromarray(frame_rgb)
 
             self.media_type = "video"
-            
+            self.video_capture = capture
         else:
             # Load cloud image file
             response: req.Response = req.get(self.media)
-            content: Image.Image   = Image.open(BytesIO(response.contect))
+            content: Image.Image   = Image.open(BytesIO(response.content))
 
         # Transform content image
         content = content.transpose(Image.FLIP_TOP_BOTTOM) if self.flip == True else content
@@ -137,7 +138,7 @@ class Main():
     def next_frame(self):
 
         # Read frame
-        succes, frame = self.media.read()
+        succes, frame = self.video_capture.read()
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         content = Image.fromarray(frame_rgb)
 
@@ -146,7 +147,7 @@ class Main():
         content = content.resize(size=(round((content.size[0] * self.scale)), round(content.size[1] * self.scale)), resample=Image.NEAREST)
 
         # Write content to moderngl texture
-        self.textures["main"].write(image.tobytes())
+        self.textures["main"].write(content.tobytes())
 
 
     def garbage_cleanup(self):
