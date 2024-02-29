@@ -22,6 +22,7 @@ class ShaderProgram(Main):
         # version 460 core
 
         uniform sampler2D uTexture;
+        uniform float uTime;
 
         in vec2 uvs;
         out vec4 fColour;
@@ -29,7 +30,11 @@ class ShaderProgram(Main):
         void main(){
             vec4 colour = texture(uTexture, uvs).rgba;
 
-            fColour = vec4(colour.rgb, colour.a);
+            if (colour.r > 0.05){
+                fColour = vec4(mix(colour.r, sin(uTime * 0.04) * uvs.y, 0.2), mix(colour.g, uvs.x, 0.2), colour.b, colour.a);
+            } else {
+                fColour = vec4(0.0, 0.0, 0.0, 1.0);
+            }
     }
 """
 
@@ -44,32 +49,42 @@ class ShaderProgram(Main):
         self.create_texture(title="new", size=self.textures["main"].size, components=self.textures["main"].components)
         self.create_framebuffer(title="new", attachments=self.textures["new"])
 
+        self.create_texture(title="final", size=self.content.size, components=self.components)
+        self.create_framebuffer(title="final", attachments=self.textures["final"])
 
     def update(self):
         # Update content shenanigans
-
+        self.programs["new"]["uTime"] = self.time
         super().update()
 
     def draw(self):
 
+        SobelFilter(ctx=self.ctx, size=self.textures["main"].size, components=self.components).run(
+            texture=self.textures["main"],
+            output=self.framebuffers["new"],
+            threshold=0.05,
+        )
+
         # Draw content shenanigans
-        self.framebuffers["new"].use()
-        self.textures["main"].use(location=0)
+        self.framebuffers["final"].use()
+        # self.framebuffers["new"].use()
+        # self.textures["main"].use(location=0)
+        self.textures["new"].use(location=0)
         self.programs["new"]["uTexture"] = 0
         self.vaos["new"].render(mgl.TRIANGLE_STRIP)
 
-        self.textures["new"].use(location=0)
+        self.textures["final"].use(location=0)
         self.programs["main"]["uTexture"] = 0
         super().draw()
         
 
 if __name__ == "__main__":
     ShaderProgram(
-        caption="I'm Testing Here!",
+        caption="",
         swizzle="RGBA",
-        scale=1.0,
-        flip=True,
+        scale=0.75,
+        flip=False,
         components=3,
-        media=r"",
-        fps=60,
+        media=r"C:\Users\ejrad\OneDrive\Captures\Captures\Halo_ The Master Chief Collection   2023-06-25 01-01-05.mp4",
+        fps=30,
     ).run()
