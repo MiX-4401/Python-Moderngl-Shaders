@@ -23,7 +23,6 @@ class ShaderProgram(Main):
 
         uniform sampler2D myTexture;
 
-
         in vec2 uvs;
         out vec4 fColour;
 
@@ -40,15 +39,20 @@ class ShaderProgram(Main):
         # Shader Shenanigans
         self.load_program()
 
+        self.create_program(title="new", vert=Main.vert, frag=ShaderProgram.frag)
+        self.create_vao(title="new", program="new", buffer="new", args=["2f 2f", "bPosition", "bTexCoord"])
         self.create_texture(title="new", size=self.textures["main"].size, components=self.textures["main"].components)
         self.create_framebuffer(title="new", attachments=self.textures["new"])
 
 
-
     def update(self):
+        # Update content shenanigans
+
         super().update()
 
     def draw(self):
+        # Draw content shenanigans
+
         super().draw()
         
 

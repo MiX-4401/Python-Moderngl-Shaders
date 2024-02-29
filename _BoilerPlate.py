@@ -38,13 +38,21 @@ class ShaderProgram(Main):
         super().__init__(media=media, scale=scale, caption=caption, swizzle=swizzle, flip=flip, components=components, method=method, fps=fps)
         
         # Shader Shenanigans
-        
+        self.load_program()
+
+        self.create_texture(title="new", size=self.textures["main"].size, components=self.textures["main"].components)
+        self.create_framebuffer(title="new", attachments=self.textures["new"])
+
 
 
     def update(self):
+        # Update content shenanigans
+
         super().update()
 
     def draw(self):
+        # Draw content shenanigans
+
         super().draw()
         
 
