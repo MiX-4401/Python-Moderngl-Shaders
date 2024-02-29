@@ -50,7 +50,7 @@ class Main():
         self.components: int = components
 
         self.framebuffers: dict = {}
-        self.textures:      dict = {}
+        self.textures:     dict = {}
         self.programs:     dict = {}
         self.vaos:         dict = {}
         self.buffers:      dict = {}
