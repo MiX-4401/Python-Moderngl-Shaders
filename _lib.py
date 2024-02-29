@@ -37,7 +37,7 @@ void main(){
 
     fColour = vec4(colour.rgb, colour.a);
 }
-"""
+"""aaa
 
     def __init__(self, caption:str, swizzle:str, scale:int, fps:int=60, flip:bool=True, components:int=3, method:str="nearest", path:str="None", url:str="None", headless:bool=False):
         self.headless:   bool = headless
