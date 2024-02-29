@@ -1,76 +1,76 @@
 """
 Author: Ethan.R
-Date of Creation: 25th November 2023
-Date of Release: 28/11/23
+Date of Creation: 31st January 2024
+Date of Release: NA
+Name of Program: NA
 """
+
 
 from _lib import Main
 import moderngl as mgl
+import pygame as pg
+
+from _shaderPasses.bloom          import Bloom
+from _shaderPasses.gaussianBlur   import GaussianBlur
+from _shaderPasses.colourQuantise import ColourQuantise
+from _shaderPasses.dithering      import Dithering
+from _shaderPasses.sobelFilter    import SobelFilter
+from _shaderPasses.contrast       import Contrast
 
 class ShaderProgram(Main):
+    frag: str = """
+        # version 460 core
 
-    program_frag: str = """
-    # version 460 core
+        uniform sampler2D uTexture;
+        uniform float time; 
+        in vec2 uvs; 
+        out vec4 fColour;
 
-    uniform sampler2D myTexture;
-    uniform float time; 
-    in vec2 uvs; 
-    out vec4 fColour;
+        void main(){
 
-    void main(){
-
-        vec4 colour = texture(myTexture, uvs).rgba;
-        
-        fColour = vec4(sin(uvs.x + time * 0.01), uvs.y, 1.0, colour.a);
-    }
+            vec4 colour = texture(uTexture, uvs).rgba;
+            
+            fColour = vec4(sin(uvs.x + time * 0.01), uvs.y, 1.0, colour.a);
+        }
 """
 
-    def __init__(self, caption:str, swizzle:str, scale:int, flip:bool=True, components:int=3, method:str="nearest", path:str="None", url:str="None", headless:bool=False):
-        super().__init__(path=path, url=url, scale=scale, caption=caption, flip=flip, swizzle=swizzle, components=components, method=method, headless=headless)
-
-        self.load_program()
+    def __init__(self, media:str, scale:int=1, caption:str="NA", swizzle:str="RGBA", flip:bool=False, components:int=4, method:str="nearest", fps:int=60):
+        super().__init__(media=media, scale=scale, caption=caption, swizzle=swizzle, flip=flip, components=components, method=method, fps=fps)
         
-        # Create shader program
-        self.new_program: mgl.Program     = self.ctx.program(vertex_shader=Main.main_vertex, fragment_shader=ShaderProgram.program_frag)
-        self.new_vao:     mgl.VertexArray = self.ctx.vertex_array(self.new_program, [(self.quad_buffer, "2f 2f", "aPosition", "aTexCoord")])
-        self.new_texture: mgl.Texture     = self.ctx.texture(size=self.start_texture.size, components=4)
-        self.framebuffer: mgl.Framebuffer = self.ctx.framebuffer(color_attachments=[self.new_texture])
+        # Shader Shenanigans
+        self.load_program()
 
-        # Render shader
-        self.framebuffer.use()
-        self.start_texture.use(location=0)
-        self.new_program["myTexture"] = 0
-        self.new_vao.render(mgl.TRIANGLE_STRIP)
+        self.create_program(title="new", vert=Main.vert, frag=ShaderProgram.frag)
+        self.create_vao(title="new", program="new", buffer="main", args=["2f 2f", "iPosition", "iTexCoord"])
+        self.create_texture(title="new", size=self.textures["main"].size, components=self.textures["main"].components)
+        self.create_framebuffer(title="new", attachments=self.textures["new"])
 
-        self.framebuffer.color_attachments[0].use(location=0)
-        self.main_program["myTexture"] = 0
 
-    @Main.d_update
     def update(self):
-        self.new_program["time"] = self.time
-    
-    @Main.d_garbage_cleanup
-    def garbage_cleanup(self):
-        self.new_texture.release()
-        self.framebuffer.release()
-        self.new_program.release()
-        self.new_vao.release()
+        # Update content shenanigans
+        self.programs["new"]["time"] = self.time
 
-    @Main.d_draw
+        super().update()
+
     def draw(self):
-        # Render shader
-        self.framebuffer.use()
-        self.start_texture.use(location=0)
-        self.new_program["myTexture"] = 0
-        self.new_vao.render(mgl.TRIANGLE_STRIP)
 
-        self.framebuffer.color_attachments[0].use(location=0)
-        self.main_program["myTexture"] = 0
+        # Draw content shenanigans
+        self.framebuffers["new"].use()
+        self.textures["main"].use(location=0)
+        self.programs["new"]["uTexture"] = 0
+        self.vaos["new"].render(mgl.TRIANGLE_STRIP)
 
-ShaderProgram(
-    url=r"https://www.pngplay.com/wp-content/uploads/9/Echidna-PNG-Clipart-Background-420x267.png",
-    caption="28/11/23",
-    swizzle="RGBA",
-    components=4,
-    scale=2
-).run()
+        self.textures["new"].use(location=0)
+        self.programs["main"]["uTexture"] = 0
+        super().draw()
+        
+
+if __name__ == "__main__":
+    ShaderProgram(
+        media=r"https://www.pngplay.com/wp-content/uploads/9/Echidna-PNG-Clipart-Background-420x267.png",
+        caption="28/11/23",
+        swizzle="RGBA",
+        components=4,
+        scale=2,
+        flip=True
+    ).run()

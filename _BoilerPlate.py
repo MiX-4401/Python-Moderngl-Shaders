@@ -1,6 +1,6 @@
 """
 Author: Ethan.R
-Date of Creation: 24th January 2024
+Date of Creation: 31st January 2024
 Date of Release: NA
 Name of Program: NA
 """
@@ -8,80 +8,68 @@ Name of Program: NA
 
 from _lib import Main
 import moderngl as mgl
-import pygame
+import pygame as pg
+
+from _shaderPasses.bloom          import Bloom
+from _shaderPasses.gaussianBlur   import GaussianBlur
+from _shaderPasses.colourQuantise import ColourQuantise
+from _shaderPasses.dithering      import Dithering
+from _shaderPasses.sobelFilter    import SobelFilter
+from _shaderPasses.contrast       import Contrast
 
 class ShaderProgram(Main):
-    program_frag: str = """
-# version 460 core
+    frag: str = """
+        # version 460 core
 
-uniform sampler2D myTexture;
+        uniform sampler2D uTexture;
 
+        in vec2 uvs;
+        out vec4 fColour;
 
-in vec2 uvs;
-out vec4 fColour;
+        void main(){
+            vec4 colour = texture(uTexture, uvs).rgba;
 
-void main(){d_update
-    vec4 colour = texture(myTexture, uvs).rgba;
-
-    fColour = vec4(colour.rgb, colour.a);
-}
+            fColour = vec4(colour.rgb, colour.a);
+    }
 """
 
-    def __init__(self, caption:str, swizzle:str, scale:int, flip:bool=True, components:int=3, method:str="nearest", path:str="None", url:str="None"):
-        super().__init__(path=path, url=url, scale=scale, caption=caption, flip=flip, swizzle=swizzle, components=components, method=method)
-
+    def __init__(self, media:str, scale:int=1, caption:str="NA", swizzle:str="RGBA", flip:bool=False, components:int=4, method:str="nearest", fps:int=60):
+        super().__init__(media=media, scale=scale, caption=caption, swizzle=swizzle, flip=flip, components=components, method=method, fps=fps)
+        
+        # Shader Shenanigans
         self.load_program()
 
-        # Load render target texture
-        self.final_texture: mgl.Texture     = self.ctx.texture(size=self.start_texture.size, components=4)
-        self.final_texture.filter: tuple    = (mgl.NEAREST, mgl.NEAREST)
-        self.framebuffer: mgl.Framebuffer   = self.ctx.framebuffer(color_attachments=[self.final_texture])
+        self.create_program(title="new", vert=Main.vert, frag=ShaderProgram.frag)
+        self.create_vao(title="new", program="new", buffer="main", args=["2f 2f", "iPosition", "iTexCoord"])
+        self.create_texture(title="new", size=self.textures["main"].size, components=self.textures["main"].components)
+        self.create_framebuffer(title="new", attachments=self.textures["new"])
 
-        # Create shader program
-        self.my_program: mgl.Program     = self.ctx.program(vertex_shader=Main.main_vertex, fragment_shader=ShaderProgram.program_frag)
-        self.my_vao:     mgl.VertexArray = self.ctx.vertex_array(self.my_program, [(self.quad_buffer, "2f 2f", "aPosition", "aTexCoord")])
 
-    @Main.d_update
     def update(self):
-        pass
+        # Update content shenanigans
 
-    @Main.d_draw
+        super().update()
+
     def draw(self):
 
-        # Ready render target
-        self.framebuffer.use()
+        # Draw content shenanigans
+        self.framebuffers["new"].use()
+        self.textures["main"].use(location=0)
+        self.programs["new"]["uTexture"] = 0
+        self.vaos["new"].render(mgl.TRIANGLE_STRIP)
+
+        self.textures["new"].use(location=0)
+        self.programs["main"]["uTexture"] = 0
+        super().draw()
         
-        # Set uniforms
-        self.start_texture.use(location=0)
-        self.my_program["myTexture"] = 0
-        
-        # Render start_texture with my_program to final_texture
-        self.my_vao.render(mgl.TRIANGLE_STRIP)
-
-        # Clear screen
-        self.ctx.screen.clear(red=0.0, green=0.0, blue=0.0, alpha=1.0)
-        self.ctx.screen.use()
-
-        # Render final_texture to screen
-        self.framebuffer.color_attachments[0].use(location=0)
-        self.main_program["myTexture"] = 0
-
-    def garbage_cleanup(self):
-        super().garbage_cleanup() # A better way then using decorators in this context
-        self.my_program.release()
-        self.my_program.release()
-        self.framebuffer.release()
-        self.my_vao.release()
-        self.new_texture.release()
-
-
 
 if __name__ == "__main__":
-    shader_program: ShaderProgram = ShaderProgram(
-        caption="NA",
+    ShaderProgram(
+        caption="I'm Testing Here!",
         swizzle="RGBA",
-        scale=1,
-        flip=False,
-        components=4,
-        url="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Beautiful-landscape.png/800px-Beautiful-landscape.png"
+        scale=1.0,
+        flip=True,
+        components=3,
+        media=r"",
+        fps=60,
     ).run()
