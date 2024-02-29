@@ -8,7 +8,7 @@ from PIL import Image
 from io import BytesIO
 from sys import exit
 
-class ShaderProgram():
+class Main():
     vert: str = """
         # version 460 core
 
@@ -39,7 +39,7 @@ class ShaderProgram():
         }
     """
 
-    def __init__(self, media:str, scale:int, caption:str="NA", swizzle:str="RGBA", flip:bool=False, components:int=4, method:str="nearest", fps:int=60):
+    def __init__(self, media:str, scale:int=1, caption:str="NA", swizzle:str="RGBA", flip:bool=False, components:int=4, method:str="nearest", fps:int=60):
         self.path:    str = media
         self.caption: str = caption
         self.swizzle: str = swizzle
@@ -56,6 +56,7 @@ class ShaderProgram():
 
         self.time: int = 0
         self.content: Image.Image = None
+        self.media_type: str = None
 
     def load_program(self):
         self.load_media()
@@ -64,6 +65,8 @@ class ShaderProgram():
 
     def load_media(self):
         # Get media content
+
+        self.media_type = "image"
 
         if self.media.split(".")[-1] in ["png", "jpg", "jpeg"]:
             # Load local image file
@@ -75,6 +78,8 @@ class ShaderProgram():
             success, frame = capture.read()
             frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             content: Image.Image = Image.fromarray(frame_rgb)
+
+            self.media_type = "video"
             
         else:
             # Load cloud image file
@@ -102,16 +107,22 @@ class ShaderProgram():
         self.ctx.enable(mgl.BLEND)
 
         # Create main texture/framebuffer
-        self.create_texture(title="main", size=self.content.size, components=self.components, data=self.content.tobytes())
+        self.create_texture(title="main", size=self.content.size, components=self.components, swizzle=self.swizzle, method=self.method)
         self.create_framebuffer(title="main", attachments=[self.textures["main"]])
-        self.textures["main"].swizzle: str = self.swizzle
+        self.textures["main"].write(data=self.content.tobytes())
 
     def create_framebuffer(self, title:str, attachments:list=[]):
         self.framebuffers[title]: mgl.Framebuffer = self.ctx.framebuffer(color_attachments=attachments)
     
-    def create_texture(self, title:str, size:tuple, components:int=4):
+    def create_texture(self, title:str, size:tuple, components:int=4, method:str="nearest", swizzle:str="RGBA"):
         self.textures[title]: mgl.Texture = self.ctx.texture(size=size, components=components)
-    
+        
+        self.textures[title].swizzle: str = swizzle
+        if method == "nearest":
+            self.textures[title].filter: tuple = (mgl.NEAREST, mgl.NEAREST)  
+        elif method == "linear":
+            self.textures[title].filter: tuple = (mgl.LINEAR, mgl.LINEAR)
+
     def create_program(self, title:str, vert:str, frag:str):
         self.programs[title]: mgl.Program = self.ctx.program(vertex_shader=vert, fragment_shader=frag)
     
@@ -120,6 +131,20 @@ class ShaderProgram():
    
     def create_buffer(self, title:str, data:np.array):
         self.buffers[title]: mgl.Buffers = self.ctx.buffer(data=data)
+
+    def next_frame(self):
+
+        # Read frame
+        succes, frame = self.media.read()
+        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        content = Image.fromarray(frame_rgb)
+
+        # Transform content image
+        content = content.transpose(Image.FLIP_TOP_BOTTOM) if self.flip == True else content
+        content = content.resize(size=(round((content.size[0] * self.scale)), round(content.size[1] * self.scale)), resample=Image.NEAREST)
+
+        # Write content to moderngl texture
+        self.textures["main"].write(image.tobytes())
 
 
     def garbage_cleanup(self):
@@ -151,9 +176,22 @@ class ShaderProgram():
         self.vaos["main"].render(mode=mgl.TRIANGLE_STRIP)
         pg.display.flip()
 
+        if self.media_type == "video":
+            self.next_frame()
+
     def run(self):
         while True:
             self.check_events()
             self.update()
             self.draw()
             self.clock.tick(self.fps)
+
+
+
+
+
+
+
+
+
+
