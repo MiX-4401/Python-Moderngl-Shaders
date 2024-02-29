@@ -88,6 +88,7 @@ class ShaderProgram(Main):
     def update(self):
         # Update content shenanigans
         self.programs["new"]["time"] = self.time
+        self.programs["new"]["resolution"] = self.screen.get_size()
         super().update()
 
     def draw(self):

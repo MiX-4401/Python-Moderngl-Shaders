@@ -149,6 +149,13 @@ class Main():
         # Write content to moderngl texture
         self.textures["main"].write(content.tobytes())
 
+    def get_image_data_from_file(self, path:str, scale:int, flip:bool):
+        content: Image.Image = Image.open(path)
+        content = content.transpose(Image.FLIP_TOP_BOTTOM) if flip == True else content
+        content = content.resize(size=(round((content.size[0] * scale)), round(content.size[1] * scale)), resample=Image.NEAREST)
+        
+        return content.tobytes()
+
 
     def garbage_cleanup(self):
         for program in self.programs:
