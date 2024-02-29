@@ -51,7 +51,7 @@ void main(){
         # Create shader program
         self.my_program: mgl.Program     = self.ctx.program(vertex_shader=Main.main_vertex, fragment_shader=ShaderProgram.program_frag)
         self.my_vao:     mgl.VertexArray = self.ctx.vertex_array(self.my_program, [(self.quad_buffer, "2f 2f", "aPosition", "aTexCoord")])
-        self.cap = cv2.VideoCapture(r"C:\Users\ejrad\OneDrive\Captures\Captures\Halo Infinite 2022-07-24 12-09-42.mp4")
+        self.cap = cv2.VideoCapture(r"C:\Users\ejrad\OneDrive\Captures\Captures\Halo_ The Master Chief Collection   2023-07-06 14-57-08.mp4")
     
     def garbage_cleanup(self):
         super().garbage_cleanup() # A better way then using decorators in this context
