@@ -70,7 +70,7 @@ class Main():
 
         self.media_type = "image"
 
-        if self.media.split(".")[-1] in ["png", "jpg", "jpeg"]:
+        if self.media.split(".")[-1] in ["png", "jpg", "jpeg"] and "https" not in self.media:
             # Load local image file
             content: Image.Image = Image.open(fp=self.media)
 
