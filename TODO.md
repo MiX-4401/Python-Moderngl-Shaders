@@ -1,0 +1,1 @@
+Shader passes run() should be classmethods not instancemethods. Else the program compiles/deletes shaders without end. 

@@ -40,7 +40,7 @@ class Main():
     """
 
     def __init__(self, media:str, scale:int=1, caption:str="NA", swizzle:str="RGBA", flip:bool=False, components:int=4, method:str="nearest", fps:int=60):
-        self.media:    str = media
+        self.media:   str = media
         self.caption: str = caption
         self.swizzle: str = swizzle
         self.scale:   int = scale
@@ -98,7 +98,7 @@ class Main():
         # Pygame Boilerplate
         self.clock: pg.time.Clock = pg.time.Clock()
         self.screen: pg.Surface = pg.display.set_mode(self.content.size, pg.DOUBLEBUF | pg.OPENGL)
-        pg.display.set_caption(title=self.caption)
+        pg.display.set_caption(self.caption)
 
     def load_moderngl(self):
         # Moderngl Boilerplate
@@ -138,16 +138,25 @@ class Main():
     def next_frame(self):
 
         # Read frame
-        succes, frame = self.video_capture.read()
-        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        content = Image.fromarray(frame_rgb)
+        success, frame = self.video_capture.read()
 
-        # Transform content image
-        content = content.transpose(Image.FLIP_TOP_BOTTOM) if self.flip == True else content
-        content = content.resize(size=(round((content.size[0] * self.scale)), round(content.size[1] * self.scale)), resample=Image.NEAREST)
+        if success:
+            frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            content = Image.fromarray(frame_rgb)
+
+            # Transform content image
+            content = content.transpose(Image.FLIP_TOP_BOTTOM) if self.flip == True else content
+            content = content.resize(size=(round((content.size[0] * self.scale)), round(content.size[1] * self.scale)), resample=Image.NEAREST) if self.scale != 1 else content
+        else:
+            content = Image.new("RGB", size=self.textures["main"].size, color=(0,0,0))
+
+        new_texture: mgl.texture = self.ctx.texture(size=self.textures["main"].size, components=self.components)
+        new_texture.write(content.tobytes())
 
         # Write content to moderngl texture
-        self.textures["main"].write(content.tobytes())
+        self.textures["main"] = new_texture
+
+        return success, new_texture
 
     def get_image_data_from_file(self, path:str, scale:int, flip:bool):
         content: Image.Image = Image.open(path)

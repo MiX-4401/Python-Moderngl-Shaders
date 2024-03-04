@@ -117,6 +117,6 @@ if __name__ == "__main__":
         scale=0.9,
         flip=False,
         components=3,
-        media=r"C:\Users\ejrad\OneDrive\Captures\Apex\Apex Legends 2023-07-30 21-59-02.mp4",
+        media=r"C:\Users\ejrad\OneDrive\Captures\Captures\Apex Legends 2023-09-10 12-57-20.mp4",
         fps=30,
     ).run()
