@@ -38,8 +38,8 @@ class ShaderProgram(Main):
 
             if (colour.r > 0.5){
                 scolour.r = 0.0;
-                scolour.g = colour.g;
-                scolour.b = 0.0;
+                scolour.b = colour.g;
+                scolour.g = 0.0;
             }
             else if (colour.r < 0.5){
                 scolour.r = colour.r;
@@ -117,6 +117,6 @@ if __name__ == "__main__":
         scale=0.9,
         flip=False,
         components=3,
-        media=r"C:\Users\ejrad\OneDrive\Captures\Captures\Apex Legends 2023-09-10 12-57-20.mp4",
+        media=r"C:\Users\ejrad\OneDrive\Captures\Apex\Apex Legends 2023-09-10 12-57-20.mp4",
         fps=30,
     ).run()
