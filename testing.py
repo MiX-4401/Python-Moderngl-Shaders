@@ -48,17 +48,7 @@ class ShaderProgram(Main):
         self.create_texture(title="back", size=self.textures["main"].size, components=self.components)
         self.create_framebuffer(title="back", attachments=[self.textures["back"]])
 
-        # self.media_type = "image"
-
-        # self.frames: list = []
-        # while True:
-        #     success, content = self.next_frame()
-            
-        #     if not success: break
-            
-        #     self.frames.append(content)
-        
-        #     self.draw()
+        self.add_shaderpass(title="Sobelfilter", shader=SobelFilter)
 
     def update(self):
         # Update content shenanigans
@@ -67,7 +57,7 @@ class ShaderProgram(Main):
         
     def draw(self):
         
-        SobelFilter(ctx=self.ctx, size=self.textures["main"].size, components=self.components).run(
+        self.shader_passes["Sobelfilter"].run(
             texture=self.textures["main"],
             output=self.framebuffers["front"],
             threshold=0.1
@@ -89,8 +79,8 @@ if __name__ == "__main__":
         caption="I'm Testing Here!",
         swizzle="RGBA",
         scale=0.75,
-        flip=False,
+        flip=True,
         components=3,
-        media=r"C:\Users\ejrad\OneDrive\Captures\Captures\ELDEN RING™ 2022-10-16 18-37-04.mp4",
+        media=r"C:\Users\ejrad\OneDrive\Captures\Captures\Starfield 2023-09-06 19-09-23.mp4",
         fps=60,
     ).run()

@@ -54,6 +54,7 @@ class Main():
         self.programs:     dict = {}
         self.vaos:         dict = {}
         self.buffers:      dict = {}
+        self.shader_passes: dict = {}
 
         self.time: int = 0
         self.content: Image.Image = None
@@ -134,6 +135,8 @@ class Main():
     def create_buffer(self, title:str, data:np.array):
         self.buffers[title]: mgl.Buffers = self.ctx.buffer(data=data)
 
+    def add_shaderpass(self, title:str, shader):
+        self.shader_passes[title] = shader(ctx=self.ctx, size=self.textures["main"].size, components=self.components)
 
     def next_frame(self):
 
@@ -177,6 +180,8 @@ class Main():
             self.textures[texture].release()
         for framebuffer in self.framebuffers:
             self.framebuffers[framebuffer].release()
+        for program in self.shader_passes:
+            self.shader_passes[program].close()
 
     def check_events(self):
         for event in pg.event.get():
