@@ -50,6 +50,15 @@ class ShaderProgram(Main):
 
         self.add_shaderpass(title="Sobelfilter", shader=SobelFilter)
 
+        self.media_type = "image"
+
+        self.threads: list = []
+        thr.Thread(target=self.get_frames())
+
+    def get_frames(self):
+        while True:
+            success, frame = self.next_frame()
+
     def update(self):
         # Update content shenanigans
         super().update()
