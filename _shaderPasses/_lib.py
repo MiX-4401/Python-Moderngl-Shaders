@@ -35,6 +35,9 @@ class ShaderPass:
 
         }
 
+        self.shader_passes: dict = {
+
+        }
 
         self.load_shaders(paths=(
             r"_shaderPasses\__base_vert.vert",
@@ -43,6 +46,8 @@ class ShaderPass:
 
         self.load_base_shader()
 
+    def __name__(self):
+        return "ShaderPass Program"
 
     def load_shaders(self, paths:tuple):
 
@@ -78,6 +83,8 @@ class ShaderPass:
             self.framebuffers[framebuffer].release()
         for texture in self.textures:
             self.textures[texture].release()
+        for program in self.shader_passes:
+            self.shader_passes[program].close()
 
     def create_program(self, name:str, vert: str, frag:str):
         program: mgl.Program = self.ctx.program(vertex_shader=vert, fragment_shader=frag)
@@ -104,6 +111,9 @@ class ShaderPass:
     def create_renderbuffer(self, name:str, size:tuple, components:int=4):
         renderbuffer: mgl.Texture = self.ctx.renderbuffer(size=size, components=components)
         self.renderbuffers.update({name: renderbuffer})
+
+    def add_shaderpass(self, name:str, shader):
+        self.shader_passes[name] = shader(ctx=self.ctx, size=self.size, components=self.components)
 
     def sample_texture(self, texture:str, location:int=0):
         """

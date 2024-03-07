@@ -17,6 +17,8 @@ class GreyScale(ShaderPass):
         self.create_texture(name="greyscale", size=size, components=components)
         self.create_framebuffer(name="greyscale", attachments=[self.textures["greyscale"]])
 
+    def __name__(self):
+        return "GreyScale Program"
 
     def run(self, texture:mgl.Texture, output:mgl.Framebuffer, **uniforms):
 
@@ -26,7 +28,6 @@ class GreyScale(ShaderPass):
 
         # Write to output
         output.color_attachments[0].write(data=self.framebuffers["greyscale"].color_attachments[0].read())
-        self.close()
 
 
 

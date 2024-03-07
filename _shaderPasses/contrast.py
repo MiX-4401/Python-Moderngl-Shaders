@@ -17,6 +17,8 @@ class Contrast(ShaderPass):
         self.create_texture(name="contrast", size=size, components=components)
         self.create_framebuffer(name="contrast", attachments=[self.textures["contrast"]])
 
+    def __name__(self):
+        return "Contrast Program"
 
     def run(self, texture:mgl.Texture, output:mgl.Framebuffer, strength:float=1.0, threshold:float=1.0, **uniforms):
 
@@ -26,7 +28,6 @@ class Contrast(ShaderPass):
 
         # Write to output
         output.color_attachments[0].write(data=self.framebuffers["contrast"].color_attachments[0].read())
-        self.close()
 
 
 

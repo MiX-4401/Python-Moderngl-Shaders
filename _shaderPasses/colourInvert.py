@@ -15,6 +15,9 @@ class ColourInvert(ShaderPass):
         self.create_vao(name="invert", program="invert", buffer="base", args=["2f 2f", "bPos", "bTexCoord"])
         self.create_framebuffer(name="invertColour")
 
+    def __name__(self):
+        return "Colour Inverter Program"
+
     def run(self, texture:mgl.Texture, output:mgl.Framebuffer, **uniforms):
         
         # Render
@@ -22,4 +25,3 @@ class ColourInvert(ShaderPass):
         
         # Write to output
         output.color_attachments[0].write(self.framebuffers["invertColour"].color_attachments[0].read())
-        self.close()

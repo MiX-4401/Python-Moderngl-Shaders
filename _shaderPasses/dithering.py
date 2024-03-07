@@ -24,6 +24,8 @@ class Dithering(ShaderPass):
         self.create_framebuffer(name="quantise1", attachments=[self.textures["quantise1"]])
         self.create_framebuffer(name="quantise2", attachments=[self.textures["quantise2"]])
 
+    def __name__(self):
+        return "Dithering Program"
 
     def run(self, texture:mgl.Texture, output:mgl.Framebuffer, colours:list=[(0.0, 0.0, 0.0), (1.0, 1.0, 1.0)], bayer:int=2, **uniforms):
 
@@ -41,7 +43,6 @@ class Dithering(ShaderPass):
 
         # Write to output
         output.color_attachments[0].write(self.framebuffers["dither"].color_attachments[0].read())
-        self.close()
 
 
 

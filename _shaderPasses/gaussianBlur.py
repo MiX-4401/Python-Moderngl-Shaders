@@ -20,6 +20,9 @@ class GaussianBlur(ShaderPass):
         self.create_framebuffer(name="ping", attachments=[self.textures["ping"]])
         self.create_framebuffer(name="pong", attachments=[self.textures["pong"]])
 
+    def __name__(self):
+        return "Gaussian Program"
+
     def run(self, texture:mgl.Texture, output:mgl.Framebuffer, x_strength:int=5, y_strength:int=5, x:int=1, **uniforms):
 
         """
@@ -40,7 +43,6 @@ class GaussianBlur(ShaderPass):
 
         # Write to output
         output.color_attachments[0].write(self.framebuffers["pong"].color_attachments[0].read())
-        self.close()
 
 
 

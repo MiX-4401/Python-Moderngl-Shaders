@@ -26,6 +26,9 @@ class Bloom(ShaderPass):
         self.create_framebuffer(name="contrast", attachments=[self.textures["contrast"]])
         self.create_framebuffer(name="bloom",    attachments=[self.textures["bloom"]])
 
+    def __name__(self):
+        return "Bloom Program"
+
     def run(self, texture:mgl.Texture, output:mgl.Texture, strength:float=1.0, threshold:float=1.0, x:int=1, **uniforms):
 
         # Create blur/contrast textures
@@ -39,7 +42,6 @@ class Bloom(ShaderPass):
 
         # Write to output
         output.color_attachments[0].write(data=self.framebuffers["bloom"].color_attachments[0].read())
-        self.close()
 
 
 

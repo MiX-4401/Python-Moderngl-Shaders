@@ -17,6 +17,9 @@ class ColourQuantise(ShaderPass):
         self.create_texture(name="quantise", size=size, components=components)
         self.create_framebuffer(name="quantise", attachments=self.textures["quantise"])
 
+    def __name__(self):
+        return "Colour Quantisation Program"
+
     def normalise(self, colour:tuple) -> tuple:
         return (colour[0]/225, colour[1]/225, colour[2]/225)
 
@@ -38,7 +41,6 @@ class ColourQuantise(ShaderPass):
 
         # Write to output
         output.color_attachments[0].write(self.framebuffers["quantise"].color_attachments[0].read())
-        self.close()
 
 
 
