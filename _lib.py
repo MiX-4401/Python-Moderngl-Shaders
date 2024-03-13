@@ -49,17 +49,18 @@ class Main():
         self.method:  str = method
         self.components: int = components
 
-        self.framebuffers: dict = {}
-        self.textures:     dict = {}
-        self.programs:     dict = {}
-        self.vaos:         dict = {}
-        self.buffers:      dict = {}
+        self.framebuffers:  dict = {}
+        self.textures:      dict = {}
+        self.programs:      dict = {}
+        self.vaos:          dict = {}
+        self.buffers:       dict = {}
         self.shader_passes: dict = {}
 
         self.time: int = 0
         self.content: Image.Image = None
         self.media_type: str = None
         self.video_capture: cv2.VideoCapture = None
+        self.frame_count: int = None
 
     def load_program(self):
         self.load_media()
@@ -68,6 +69,10 @@ class Main():
 
     def load_media(self):
         # Get media content
+
+        """
+            Transforming cv2 content to image.Image frames makes no sense and is a waste of proccessing
+        """
 
         self.media_type = "image"
 
@@ -84,6 +89,7 @@ class Main():
 
             self.media_type = "video"
             self.video_capture = capture
+            self.frame_count = capture.get(cv2.CAP_PROP_FRAME_COUNT)
         else:
             # Load cloud image file
             response: req.Response = req.get(self.media)
@@ -153,13 +159,10 @@ class Main():
         else:
             content = Image.new("RGB", size=self.textures["main"].size, color=(0,0,0))
 
-        new_texture: mgl.texture = self.ctx.texture(size=self.textures["main"].size, components=self.components)
-        new_texture.write(content.tobytes())
-
         # Write content to moderngl texture
-        self.textures["main"] = new_texture
+        self.textures["main"].write(content.tobytes())
 
-        return success, new_texture
+        return success, content
 
     def get_image_data_from_file(self, path:str, scale:int, flip:bool):
         content: Image.Image = Image.open(path)

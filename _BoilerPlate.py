@@ -31,7 +31,7 @@ class ShaderProgram(Main):
 
             fColour = vec4(colour.rgb, colour.a);
     }
-"""
+    """
 
     def __init__(self, media:str, scale:int=1, caption:str="NA", swizzle:str="RGBA", flip:bool=False, components:int=4, method:str="nearest", fps:int=60):
         super().__init__(media=media, scale=scale, caption=caption, swizzle=swizzle, flip=flip, components=components, method=method, fps=fps)
