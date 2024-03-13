@@ -4,9 +4,9 @@ uniform sampler2D uTexture;
 
 
 in vec2 uvs;
-out vec4 fragColour;
+out vec4 fColour;
 
 void main(){
     vec4 colour = texture(uTexture, uvs).rgba;
-    vec4 fragColour = vec4(colour.rgb, colour.a);
+    fColour = vec4(colour.rgb, colour.a);
 }
