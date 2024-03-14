@@ -50,7 +50,7 @@ void main(){
     float brightness = dot(colour, vec3(0.2126, 0.7152, 0.0722));
     
     // Set bColour depending on brightness
-    if (brightness > 0.9){ // Change this value for contrast
+    if (brightness > 0.1){ // Change this value for contrast
         bColour = vec4(colour, 1.0);
     } else {
         bColour = vec4(0.0, 0.0, 0.0, 1.0);
@@ -132,7 +132,7 @@ void main(){
         self.main_vao: moderngl.VertexArray = self.ctx.vertex_array(self.main_program, [(self.quad_buffer, "2f 2f", "aPosition", "aTexCoord")])
 
         # Create texture
-        self.my_texture: Texture = Texture(ctx=self.ctx, filepath=r"04Projects\ShaderBloom\image_5.jpg")
+        self.my_texture: Texture = Texture(ctx=self.ctx, filepath=r"_images\4TextureOutback.jpg")
         self.my_texture.load_texture()
 
         # Create screen texture
