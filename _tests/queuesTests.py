@@ -30,7 +30,8 @@ def convert_frames():
 
     while True:
         content = raw_frames.get()
-        frame: Image.Image = Image.fromarray(obj=content, mode="RGB")
+        content = cv2.resize(content, (500,500))
+        frame = content
         new_frames.append(frame)
         if len(new_frames) == frame_count:
             break
@@ -50,7 +51,7 @@ if __name__ == "__main__":
     thread_2.join()
 
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
-    video = cv2.VideoWriter("test.mp4", 0, fourcc, 30, (1920, 1080))
+    video = cv2.VideoWriter("test2.mp4", 0, fourcc, 30, (500, 500))
     for frame in new_frames:
         content = cv2.cvtColor(np.array(object=frame), cv2.COLOR_RGB2BGR)
         video.write(image=content)
