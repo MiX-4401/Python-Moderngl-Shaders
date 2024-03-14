@@ -1,0 +1,25 @@
+Pseudocode for Sobel Operator (GLSL FragShader)
+
+BEGIN
+    uniform -> uTexture    // Main texture
+    uniform -> uResolution // Renderbuffer size
+    uniform -> uThreshold  // Black/white threshold value
+
+    kernalY -> matrix(3x3) {
+        -1, 0, 1,
+        -2, 0, 2,
+        -1, 0, 1
+    }
+
+    kernalX -> matrix(3x3) {
+        -1, -2, -1,
+         0,  0,  0,
+         1,  2,  1
+    }
+
+    # Main function (per fragment)
+    MAIN
+        gX -> 0.0
+        gY -> 0.0
+
+        
