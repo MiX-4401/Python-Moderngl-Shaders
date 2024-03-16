@@ -19,7 +19,37 @@ BEGIN
 
     # Main function (per fragment)
     MAIN
+        
+        # Gradient intensity on the x,y direction
         gX -> 0.0
         gY -> 0.0
+
+        # x,y axis kernal pass
+        FOR each value between -1 to 1 as i THEN
+            FOR each value between -1 to 1 as j THEN
+
+                # Calculate uvs of surrounding fragments
+                x -> (get_uvs().x / uResolution.x) + float(i) / uResolution.x
+                y -> (get_uvs().y / uResolution.y) + float(j) / uResolution.y
+
+                # Add intensity of the gradient on the x,y axies
+                gX += texture(uTexture, vec2(x,y)).r * float(kernalX[i+1][j+1])
+                gY += texture(uTexture, vec2(x,y)).r * float(kernalY[i+1][j+1])
+            
+            ENDFOR
+        ENDFOR
+
+        # Euclidean Distance
+        mag = sqrt(pow(gX, 2) + pow(gY, 2))
+
+        if (g > uThreshold){
+            finalColour = vec4(g, g, g, 1.0);
+        } else {
+            finalColour = vec4(0.0, 0.0, 0.0, 1.0);
+        }
+
+    ENDMAIN
+END
+
 
         
