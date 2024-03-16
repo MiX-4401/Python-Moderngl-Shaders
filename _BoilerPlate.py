@@ -7,7 +7,8 @@ Name of Program: NA
 
 from _lib import Main
 import moderngl as mgl
-import pygame as pg
+import pygame   as pg
+import numpy    as np
 
 from _shaderPasses.bloom          import Bloom
 from _shaderPasses.gaussianBlur   import GaussianBlur
