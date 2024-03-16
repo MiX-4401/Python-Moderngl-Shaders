@@ -116,12 +116,11 @@ class ShaderProgram(Main):
 
 if __name__ == "__main__":
     ShaderProgram(
-        caption="I'm Testing Here!",
+        caption="Sobel Filter Video w\ Multithreading",
         swizzle="RGBA",
         scale=0.75,
         flip=True,
         components=3,
-        media=r"C:\Users\ejrad\OneDrive\Captures\Souls\ELDEN RING™ 2022-10-16 18-37-04.mp4",
-        # media=r"_images\video_2.mp4",
+        media=r"_images\video_2.mp4",
         fps=60,
     ).run()

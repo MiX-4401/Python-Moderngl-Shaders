@@ -103,7 +103,7 @@ class ShaderProgram(Main):
 
 if __name__ == "__main__":
     ShaderProgram(
-        caption="",
+        caption="DS Fire Effect",
         swizzle="RGBA",
         scale=0.5,
         flip=False,

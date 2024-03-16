@@ -112,7 +112,7 @@ class ShaderProgram(Main):
 
 if __name__ == "__main__":
     ShaderProgram(
-        caption="",
+        caption="Screen Capture Effects (Sobel Filter)",
         swizzle="RGBA",
         scale=0.9,
         flip=False,

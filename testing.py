@@ -9,9 +9,6 @@ from _lib import Main
 import moderngl as mgl
 import pygame   as pg
 import numpy    as np
-from PIL import Image
-from PIL import ImageGrab
-import mss
 
 from _shaderPasses.bloom          import Bloom
 from _shaderPasses.gaussianBlur   import GaussianBlur
@@ -47,6 +44,7 @@ class ShaderProgram(Main):
         self.create_texture(title="new", size=self.textures["main"].size, components=self.textures["main"].components)
         self.create_framebuffer(title="new", attachments=self.textures["new"])
 
+
     def update(self):
         # Update content shenanigans
 
@@ -72,6 +70,6 @@ if __name__ == "__main__":
         scale=1.0,
         flip=True,
         components=3,
-        media=r"_images\video_2.mp4",
+        media=r"",
         fps=60,
     ).run()
