@@ -54,9 +54,6 @@ class ShaderProgram(Main):
 
         self.raw_frames: LifoQueue = LifoQueue()
         self.new_frames: LifoQueue = LifoQueue()
-
-        self.lock:        thr.Lock = thr.Lock()
-        self.condition:   thr.Condition = thr.Condition(lock=self.lock)
         
         self.thread_1:    thr.Thread = thr.Thread(target=self.get_frames,     daemon=True)
         self.thread_2:    thr.Thread = thr.Thread(target=self.convert_frames, daemon=True)
