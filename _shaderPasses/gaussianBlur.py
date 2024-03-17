@@ -32,7 +32,7 @@ class GaussianBlur(ShaderPass):
 
         # Initial sample
         self.textures["pong"].write(texture.read())
-
+        
         for x in range(x):
             self.sample_framebuffer(framebuffer="pong")
             self.render_direct(program="gaussianBlur", vao="gaussianBlur", framebuffer=self.framebuffers["ping"], uTexture=0, uHorizontal=True, uXStrength=x_strength, uYStrength=y_strength)

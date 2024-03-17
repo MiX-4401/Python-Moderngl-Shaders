@@ -16,6 +16,7 @@ from _shaderPasses.colourQuantise import ColourQuantise
 from _shaderPasses.dithering      import Dithering
 from _shaderPasses.sobelFilter    import SobelFilter
 from _shaderPasses.contrast       import Contrast
+from _shaderPasses.greyScale      import GreyScale
 
 class ShaderProgram(Main):
     frag: str = """

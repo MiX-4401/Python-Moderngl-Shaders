@@ -11,6 +11,14 @@ from _lib import Main
 import moderngl as mgl
 import pygame
 
+from _shaderPasses.bloom          import Bloom
+from _shaderPasses.gaussianBlur   import GaussianBlur
+from _shaderPasses.colourQuantise import ColourQuantise
+from _shaderPasses.dithering      import Dithering
+from _shaderPasses.sobelFilter    import SobelFilter
+from _shaderPasses.contrast       import Contrast
+from _shaderPasses.greyScale      import GreyScale
+
 class ShaderProgram(Main):
     rain_frag: str = """
         # version 460 core
@@ -90,7 +98,7 @@ if __name__ == "__main__":
     shader_program: ShaderProgram = ShaderProgram(
         caption="Rain Effect",
         swizzle="RGBA",
-        scale=0.74,
+        scale=0.75,
         flip=True,
         components=4,
         method="linear",
