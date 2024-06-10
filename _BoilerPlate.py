@@ -10,13 +10,14 @@ import moderngl as mgl
 import pygame   as pg
 import numpy    as np
 
-from _shaderPasses.bloom          import Bloom
-from _shaderPasses.gaussianBlur   import GaussianBlur
-from _shaderPasses.colourQuantise import ColourQuantise
-from _shaderPasses.dithering      import Dithering
-from _shaderPasses.sobelFilter    import SobelFilter
-from _shaderPasses.contrast       import Contrast
-from _shaderPasses.greyScale      import GreyScale
+from _shaderPasses.bloom              import Bloom
+from _shaderPasses.gaussianBlur       import GaussianBlur
+from _shaderPasses.colourQuantise     import ColourQuantise
+from _shaderPasses.dithering          import Dithering
+from _shaderPasses.sobelFilter        import SobelFilter
+from _shaderPasses.contrast           import Contrast
+from _shaderPasses.greyScale          import GreyScale
+from _shaderPasses.cannyEdgeDetection import CannyEdgeDetection
 
 class ShaderProgram(Main):
     frag: str = """
@@ -31,7 +32,7 @@ class ShaderProgram(Main):
             vec4 colour = texture(uTexture, uvs).rgba;
 
             fColour = vec4(colour.rgb, colour.a);
-    }
+        }
     """
 
     def __init__(self, media:str, scale:int=1, caption:str="NA", swizzle:str="RGBA", flip:bool=False, components:int=4, method:str="nearest", fps:int=60):

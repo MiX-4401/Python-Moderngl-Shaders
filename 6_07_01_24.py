@@ -44,13 +44,14 @@ class ShaderProgram(Main):
             //uv_pixel = uvs;
 
             vec3 displace = texture(uNoiseTexture, vec2(uv_pixel.x, (uv_pixel.y + sin(time)) * 0.05)).rgb;
-            //displace = texture(uNoiseTexture, vec2(uv_pixel.x, (uv_pixel.y))).rgb;
+            displace = texture(uNoiseTexture, vec2(uv_pixel.x, (uv_pixel.y))).rgb;
 
 
             vec2 uv_temp = uv_pixel;
             uv_temp.y *= 0.2;
             uv_temp.y += sin(time);
             vec4 baseColour  = texture(uNoiseTexture, uv_temp + displace.xy);
+            //vec4 baseColour  = texture(uNoiseTexture, uvs);
             
             vec4 noise  = floor(baseColour * 10.0) / 5.0;
             vec4 bright = mix(colour1, colour2, uvs.y);

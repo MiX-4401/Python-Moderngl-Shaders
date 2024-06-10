@@ -3,7 +3,7 @@
 uniform sampler2D uTexture;
 uniform int  uCloseness;
 uniform int  uPalletSize;
-uniform vec3 uPallet[10];
+uniform vec3 uPallet[20];
 
 in vec2 uvs;
 out vec4 fColour;
