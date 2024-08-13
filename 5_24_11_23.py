@@ -135,7 +135,7 @@ class ShaderProgram(Main):
 
         # Load normal texture
         self.create_texture(title="normal", size=self.content.size, components=self.components)
-        self.textures["normal"].write(data=self.get_image_data_from_file(path=r"_images\0NormalWall.png", scale=1.5, flip=True))
+        self.textures["normal"].write(data=self.get_image_data_from_file(path=r"_images/0NormalWall.png", scale=1.5, flip=True))
 
     def update(self):
         # Update content shenanigans
@@ -169,7 +169,7 @@ class ShaderProgram(Main):
 
 if __name__ == "__main__":
     shader_program: ShaderProgram = ShaderProgram(
-        media=r"_images\0TextureWall.png",
+        media=r"_images/0TextureWall.png",
         caption="NA",
         swizzle="RGBA",
         scale=1.5,
