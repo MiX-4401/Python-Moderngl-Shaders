@@ -24,37 +24,14 @@ class ShaderProgram(Main):
         # version 460 core
 
         uniform sampler2D uTexture;
-        //uniform float uTime;
-        //uniform vec2 uResolution;
 
         in vec2 uvs;
         out vec4 fColour;
-        
-        //float wave = cos((colour.x - uTime * 0.01) * 6.283185307 * 5) * 0.5 + 0.5;
-
-        const vec3 cColour1 = vec3(247.0/225.0, 0.0/225.0, 0.0/225.0);
-        const vec3 cColour2 = vec3(199.0/225.0, 63.0/225.0, 10.0/225.0);
-        const vec3 cColour3 = vec3(122.0/225.0, 8.0/225.0,  8.0/225.0);
-        const vec3 cColour4 = vec3(3.0/225.0, 0.0/225.0, 0.0/225.0);
-        
-        //const vec3 cColour1 = vec3(81.0/225.0, 179.0/225.0, 214.0/225.0);
-        //const vec3 cColour2 = vec3(70.0/225.0, 126.0/225.0, 214.0/225.0);
-        //const vec3 cColour3 = vec3(50.0/225.0, 82.0/225.0,  209.0/225.0);
-        //const vec3 cColour4 = vec3(29.0/225.0, 48.0/225.0,  122.0/225.0);
 
         void main(){
+            vec4 colour = texture(uTexture, uvs).rgba;
 
-            // Sample texture
-            vec3 baseColour = texture(uTexture, vec2(uvs.x * 0.2, uvs.y)).rgb;
-
-            // Map frag to colour
-            vec3 noise  = floor(baseColour * 10.0) / 5.0;
-            vec3 bright = mix(cColour1, cColour2, noise);
-            vec3 dark   = mix(cColour3, cColour4, noise);
-            vec3 colour = mix(bright, dark, noise);
-            //vec3 colour = mix(vec3(0.75, 0.0, 0.0), vec3(0.0, 0.0, 0.0), noise);
-
-            fColour = vec4(colour, 1.0);
+            fColour = vec4(colour.rgb, colour.a);
         }
     """
 
@@ -69,18 +46,24 @@ class ShaderProgram(Main):
         self.create_texture(title="new", size=self.textures["main"].size, components=self.textures["main"].components)
         self.create_framebuffer(title="new", attachments=self.textures["new"])
 
+        # self.create_texture(title="final", size=self.content.size, components=self.components)
+        # self.create_framebuffer(title="final", attachments=self.textures["final"])
 
     def update(self):
         # Update content shenanigans
-        #self.programs["new"]["uTime"] = self.time
-        #self.programs["new"]["uResolution"] = self.textures["main"].size
         super().update()
 
     def draw(self):
 
+        SobelFilter(ctx=self.ctx, size=self.textures["main"].size, components=self.components).run(
+            texture=self.textures["main"],
+            output=self.framebuffers["new"],
+            threshold=0.07,
+        )
+
         # Draw content shenanigans
-        self.framebuffers["new"].use()
-        self.textures["main"].use(location=0)
+        # self.framebuffers["new"].use()
+        self.textures["new"].use(location=0)
         self.programs["new"]["uTexture"] = 0
         self.vaos["new"].render(mgl.TRIANGLE_STRIP)
 
@@ -93,9 +76,9 @@ if __name__ == "__main__":
     ShaderProgram(
         caption="I'm Testing Here!",
         swizzle="RGBA",
-        scale=3.0,
-        flip=False,
-        components=4,
-        media=r"_images\NoiseCellular.png",
-        fps=60
+        scale=0.25,
+        flip=True,
+        components=3,
+        media=r"C:\Users\ejrad\OneDrive\Pictures\Ethan-PC Pictures\Camera Roll\Jas & I\IMG_6052.jpg",
+        fps=60,
     ).run()
